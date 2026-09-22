@@ -1,1 +1,1 @@
-upload schematocs, pcb layouts, pcb
+upload schematics, pcb layouts, pcb
