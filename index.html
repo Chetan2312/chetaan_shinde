@@ -244,6 +244,8 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:1rem}
 .ph code{font-family:var(--mono);color:var(--copper)}
 .loupe-wrap.empty .ph{display:grid}.loupe-wrap.empty{cursor:default}
 .cap-note{margin-top:.6rem;font-size:.82rem;color:var(--muted)}
+.cap-note a{color:var(--copper)}
+.loupe-wrap img{background:#fff}
 .code{max-height:330px;overflow:auto}
 .code .ln{display:inline-block;width:2.2em;color:#3C5548;user-select:none}
 .dets{margin-top:.8rem;display:flex;flex-wrap:wrap;gap:.4rem}
@@ -353,7 +355,8 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:1rem}
         <div class="chips"><span>KiCad</span><span>Power design</span><span>Protection</span><span>BOM costing</span></div>
       </div>
       <div class="demo">
-        <div class="demo-cap"><span>12 V input stage for an ESP32 sensor node</span><span>Click a part</span></div>
+        <div class="demo-cap"><div class="seg" id="schSeg"><button class="on" data-v="demo">Interactive</button><button data-v="real">My schematic</button></div><span id="schHint">Click a part</span></div>
+        <div class="sub on" data-sv="demo">
         <svg class="sch" viewBox="0 0 520 270" id="sch">
           <line x1="60" y1="110" x2="110" y2="110"/><line x1="140" y1="110" x2="200" y2="110"/>
           <line x1="290" y1="110" x2="400" y2="110"/>
@@ -375,6 +378,16 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:1rem}
           <g class="part" tabindex="0" data-k="R"><rect class="hit" x="56" y="146" width="50" height="94"/><path d="M80,150l8,4l-16,6l16,6l-16,6l16,6l-8,2"/><path d="M80,205l8,4l-16,6l16,6l-16,6l16,6l-8,2"/><text x="92" y="170">R1</text><text x="92" y="225">R2</text></g>
         </svg>
         <div class="note" id="schNote"><b>D1</b> Schottky diode for reverse-polarity protection. Its low forward drop (about 0.3 V) wastes less power than a standard diode.</div>
+        </div>
+        <div class="sub" data-sv="real">
+          <div class="loupe-wrap">
+            <!-- EDIT: put your image at assets/schematic.png -->
+            <img src="assets/schematic.png" alt="Schematic designed by Chetan">
+            <div class="loupe"></div>
+            <div class="ph"><span>Add your image at <code>assets/schematic.png</code></span></div>
+          </div>
+          <p class="cap-note">Hover or drag to magnify. <a href="assets/schematic.png" target="_blank" rel="noopener">Open full size</a></p>
+        </div>
       </div>
     </div>
 
@@ -387,7 +400,7 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:1rem}
       </div>
       <div class="demo">
         <div class="demo-cap">
-          <div class="seg" id="pcbSeg"><button class="on" data-v="photo">Real board</button><button data-v="layers">Layer view</button></div>
+          <div class="seg" id="pcbSeg"><button class="on" data-v="photo">Real board</button><button data-v="layout">Layout</button><button data-v="layers">Layer view</button></div>
           <div class="toggles" id="layerToggles" hidden>
             <label><input type="checkbox" data-l="top" checked>Top</label>
             <label><input type="checkbox" data-l="bot" checked>Bottom</label>
@@ -395,13 +408,22 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:1rem}
           </div>
         </div>
         <div class="sub on" data-pv="photo">
-          <div class="loupe-wrap" id="loupeWrap">
+          <div class="loupe-wrap">
             <!-- EDIT: put your board photo at assets/pcb.jpg (or change the src) -->
             <img id="pcbPhoto" src="assets/pcb.jpg" alt="PCB designed and assembled by Chetan">
-            <div class="loupe" id="loupe"></div>
+            <div class="loupe"></div>
             <div class="ph"><span>Add your board photo at <code>assets/pcb.jpg</code></span></div>
           </div>
-          <p class="cap-note" id="pcbCap">Hover or drag across the board to magnify</p>
+          <p class="cap-note">Hover or drag to magnify. <a href="assets/pcb.jpg" target="_blank" rel="noopener">Open full size</a></p>
+        </div>
+        <div class="sub" data-pv="layout">
+          <div class="loupe-wrap">
+            <!-- EDIT: put your image at assets/pcb-layout.png -->
+            <img src="assets/pcb-layout.png" alt="PCB layout designed by Chetan">
+            <div class="loupe"></div>
+            <div class="ph"><span>Add your image at <code>assets/pcb-layout.png</code></span></div>
+          </div>
+          <p class="cap-note">Hover or drag to magnify. <a href="assets/pcb-layout.png" target="_blank" rel="noopener">Open full size</a></p>
         </div>
         <div class="sub" data-pv="layers">
 <svg class="pcb" id="pcbsvg" viewBox="0 0 520 310">
@@ -910,25 +932,32 @@ function fitCanvas(cv, H) { const dpr = Math.min(devicePixelRatio || 1, 2), W = 
     toggles.hidden = v !== "layers";
   });
 
-  const wrap = document.getElementById("loupeWrap"), img = document.getElementById("pcbPhoto"), lp = document.getElementById("loupe"), Z = 2.6;
-  const empty = () => { wrap.classList.add("empty"); img.style.display = "none"; document.getElementById("pcbCap").textContent = "Photo slot is empty"; };
-  img.addEventListener("error", empty);
-  if (img.complete && !img.naturalWidth) empty();
-  function move(e) {
-    if (wrap.classList.contains("empty")) return;
-    const wr = wrap.getBoundingClientRect(), ir = img.getBoundingClientRect();
-    const x = e.clientX - ir.left, y = e.clientY - ir.top;
-    if (x < 0 || y < 0 || x > ir.width || y > ir.height) { wrap.classList.remove("zoom"); return; }
-    wrap.classList.add("zoom");
-    const half = lp.offsetWidth / 2;
-    lp.style.left = (e.clientX - wr.left) + "px"; lp.style.top = (e.clientY - wr.top) + "px";
-    lp.style.backgroundImage = `url("${img.currentSrc || img.src}")`;
-    lp.style.backgroundSize = `${ir.width * Z}px ${ir.height * Z}px`;
-    lp.style.backgroundPosition = `${-(x * Z - half)}px ${-(y * Z - half)}px`;
-  }
-  wrap.addEventListener("pointermove", move);
-  wrap.addEventListener("pointerdown", e => { wrap.setPointerCapture(e.pointerId); move(e); });
-  ["pointerleave", "pointerup", "pointercancel"].forEach(ev => wrap.addEventListener(ev, () => wrap.classList.remove("zoom")));
+  document.querySelectorAll(".loupe-wrap").forEach(wrap => {
+    const img = wrap.querySelector("img"), lp = wrap.querySelector(".loupe"), cap = wrap.nextElementSibling, Z = 2.6;
+    const empty = () => { wrap.classList.add("empty"); img.style.display = "none"; if (cap) cap.textContent = "Image slot is empty"; };
+    img.addEventListener("error", empty);
+    if (img.complete && !img.naturalWidth) empty();
+    function move(e) {
+      if (wrap.classList.contains("empty")) return;
+      const wr = wrap.getBoundingClientRect(), ir = img.getBoundingClientRect();
+      const x = e.clientX - ir.left, y = e.clientY - ir.top;
+      if (x < 0 || y < 0 || x > ir.width || y > ir.height) { wrap.classList.remove("zoom"); return; }
+      wrap.classList.add("zoom");
+      const half = lp.offsetWidth / 2;
+      lp.style.left = (e.clientX - wr.left) + "px"; lp.style.top = (e.clientY - wr.top) + "px";
+      lp.style.backgroundImage = `url("${img.currentSrc || img.src}")`;
+      lp.style.backgroundSize = `${ir.width * Z}px ${ir.height * Z}px`;
+      lp.style.backgroundPosition = `${-(x * Z - half)}px ${-(y * Z - half)}px`;
+    }
+    wrap.addEventListener("pointermove", move);
+    wrap.addEventListener("pointerdown", e => { wrap.setPointerCapture(e.pointerId); move(e); });
+    ["pointerleave", "pointerup", "pointercancel"].forEach(ev => wrap.addEventListener(ev, () => wrap.classList.remove("zoom")));
+  });
+  const schHint = document.getElementById("schHint");
+  seg("schSeg", "v", v => {
+    document.querySelectorAll("[data-sv]").forEach(x => x.classList.toggle("on", x.dataset.sv === v));
+    schHint.textContent = v === "demo" ? "Click a part" : "Real project";
+  });
 })();
 
 /* ---------- Firmware: selectable snippets ---------- */
