@@ -1,0 +1,1505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- EDIT: replace [Surname] everywhere in this file -->
+<title>Chetan [Surname] | Edge-AI hardware consultant, Pune</title>
+<meta name="description" content="Hardware and edge-AI products from idea to field-ready. Schematic, PCB, firmware, vision models and deployment, handled by one engineer.">
+<meta property="og:title" content="Chetan [Surname] | Edge-AI hardware consultant">
+<meta property="og:description" content="From the first resistor to the last line of code.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%230C2A1F'/><circle cx='16' cy='16' r='8' fill='none' stroke='%23E0B35A' stroke-width='4'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07140F; --board:#0C2A1F; --board2:#113628; --board3:#16432F;
+  --ink:#EEF2EA; --muted:#95AE9F; --copper:#E0B35A; --copper-dim:#5C4B27;
+  --signal:#FFE9AE; --blue:#6C95C2; --danger:#FF8A6B;
+  --line:rgba(238,242,234,.1); --line2:rgba(238,242,234,.18);
+  --mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+  --wrap:1180px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:"Archivo","Helvetica Neue",Arial,sans-serif;font-size:1.0625rem;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--copper);outline-offset:3px;border-radius:6px}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 1.5rem}
+
+/* Nav */
+.nav{position:fixed;inset:0 0 auto 0;z-index:50;transition:background .3s,border-color .3s;border-bottom:1px solid transparent}
+.nav.solid{background:rgba(7,20,15,.82);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-color:var(--line)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;height:68px}
+.brand{font-weight:800;font-stretch:115%;text-decoration:none;display:flex;align-items:center;gap:.6rem}
+.brand i{width:14px;height:14px;border-radius:50%;border:3px solid var(--copper);display:inline-block;box-shadow:0 0 12px rgba(224,179,90,.6)}
+.nav nav{display:flex;align-items:center;gap:1.75rem;font-size:.95rem}
+.nav nav a{text-decoration:none;color:var(--muted)}
+.nav nav a:hover{color:var(--ink)}
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.8rem 1.35rem;border-radius:999px;font-weight:650;text-decoration:none;border:2px solid var(--copper);cursor:pointer;background:none;transition:transform .15s,box-shadow .2s}
+.btn:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(224,179,90,.25)}
+.btn.primary{background:var(--copper);color:#1B1406}
+.btn.small{padding:.5rem 1rem;font-size:.9rem}
+.nav nav .btn{color:#1B1406}
+
+/* Hero */
+.hero{position:relative;min-height:100vh;min-height:100svh;display:flex;align-items:center;overflow:hidden;background:radial-gradient(120% 90% at 70% 40%,var(--board) 0%,var(--bg) 70%)}
+#pcb{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:crosshair}
+.hero::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(7,20,15,.92) 0%,rgba(7,20,15,.55) 45%,rgba(7,20,15,.1) 75%),linear-gradient(0deg,var(--bg) 0%,transparent 25%)}
+.hero .wrap{position:relative;z-index:2;display:grid;grid-template-columns:1.25fr .9fr;gap:3rem;align-items:center;padding-top:6rem;padding-bottom:4rem;pointer-events:none}
+.hero .wrap > *{pointer-events:auto}
+.hero h1{font-size:clamp(2.6rem,6vw,5.4rem);font-weight:850;font-stretch:125%;line-height:.98;letter-spacing:-.025em}
+.rotator{margin-top:1.5rem;font-size:clamp(1.2rem,2.2vw,1.6rem);font-stretch:108%;color:var(--muted)}
+.rotator b{color:var(--copper);font-weight:700;border-right:3px solid var(--copper);padding-right:4px;animation:caret 1s steps(1) infinite}
+@keyframes caret{50%{border-color:transparent}}
+.hero .actions{margin-top:2.25rem;display:flex;flex-wrap:wrap;gap:1rem}
+.hint{margin-top:2.5rem;font-size:.9rem;color:var(--muted);display:flex;align-items:center;gap:.6rem}
+.hint::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--copper);box-shadow:0 0 0 0 rgba(224,179,90,.6);animation:ping 2s infinite}
+@keyframes ping{0%{box-shadow:0 0 0 0 rgba(224,179,90,.6)}80%,100%{box-shadow:0 0 0 12px rgba(224,179,90,0)}}
+
+.term{background:rgba(5,14,10,.88);border:1px solid var(--line2);border-radius:14px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.5);backdrop-filter:blur(6px)}
+.term-bar{display:flex;align-items:center;gap:.45rem;padding:.7rem 1rem;border-bottom:1px solid var(--line);font-size:.8rem;color:var(--muted)}
+.term-bar span{width:10px;height:10px;border-radius:50%;background:var(--line2)}
+.term-bar span:first-child{background:#E0725A}.term-bar span:nth-child(2){background:var(--copper)}.term-bar span:nth-child(3){background:#6FBF7F}
+.term-bar em{margin-left:auto;font-style:normal}
+.term pre{font-family:var(--mono);font-size:.8rem;line-height:1.7;padding:1rem 1.1rem;height:300px;overflow:hidden;white-space:pre-wrap;color:#CFE0D4}
+.t-i{color:#7FD08E}.t-w{color:var(--copper)}.t-d{color:var(--muted)}
+
+/* Sections */
+.sec{padding:7rem 0;position:relative}
+.sec + .sec{border-top:1px solid var(--line)}
+.sec h2{font-size:clamp(2rem,4.2vw,3.3rem);font-weight:850;font-stretch:120%;line-height:1.04;letter-spacing:-.02em;max-width:20ch}
+.sec .intro{margin-top:1.1rem;color:var(--muted);max-width:60ch;font-size:1.1rem}
+
+/* Stack explorer */
+.pads{margin-top:3rem;position:relative;display:grid;grid-template-columns:repeat(5,1fr)}
+.pads::before{content:"";position:absolute;left:10%;right:10%;top:27px;height:4px;background:var(--copper-dim);border-radius:2px}
+.pads .fill{position:absolute;left:10%;top:27px;height:4px;background:var(--copper);border-radius:2px;box-shadow:0 0 14px rgba(224,179,90,.7);transition:width .5s cubic-bezier(.6,0,.2,1)}
+.pad{position:relative;background:none;border:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:.7rem;padding:0 .25rem}
+.pad i{width:58px;height:58px;border-radius:50%;background:var(--bg);border:7px solid var(--copper-dim);display:block;transition:border-color .3s,box-shadow .3s,transform .2s}
+.pad:hover i{transform:scale(1.06)}
+.pad.on i{border-color:var(--copper);box-shadow:0 0 0 6px rgba(224,179,90,.12),0 0 26px rgba(224,179,90,.55)}
+.pad strong{font-stretch:112%;font-size:1.05rem}
+.pad small{color:var(--muted);font-size:.82rem;text-align:center}
+.pad.on strong{color:var(--copper)}
+
+.panel{margin-top:3rem;display:none;grid-template-columns:.85fr 1.15fr;gap:3rem;align-items:start}
+.panel.on{display:grid;animation:panelIn .35s ease-out}
+@keyframes panelIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.panel h3{font-size:1.7rem;font-stretch:115%;line-height:1.15}
+.panel p{margin-top:1rem;color:var(--muted);max-width:48ch}
+.chips{margin-top:1.4rem;display:flex;flex-wrap:wrap;gap:.5rem}
+.chips span{font-size:.85rem;padding:.3rem .75rem;border-radius:999px;border:1px solid var(--line2);color:var(--ink)}
+.demo{background:var(--board);border:1px solid var(--line2);border-radius:18px;padding:1.25rem;min-height:340px;position:relative;box-shadow:inset 0 0 0 1px rgba(255,255,255,.02),0 20px 60px rgba(0,0,0,.35)}
+.demo-cap{display:flex;justify-content:space-between;align-items:center;gap:1rem;font-size:.85rem;color:var(--muted);margin-bottom:.9rem;flex-wrap:wrap}
+.demo svg{width:100%;height:auto;display:block}
+.note{margin-top:1rem;padding:.9rem 1rem;border-radius:12px;background:var(--board2);border-left:3px solid var(--copper);font-size:.95rem;min-height:4.4rem}
+.note b{color:var(--copper)}
+
+/* schematic */
+.sch line,.sch path,.sch polyline{stroke:#CFE0D4;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.sch text{fill:var(--muted);font-family:var(--mono);font-size:12px}
+.sch .part{cursor:pointer}
+.sch .part .hit{fill:transparent;stroke:none}
+.sch .part:hover path,.sch .part:hover line,.sch .part:hover polygon,.sch .part:hover rect:not(.hit),.sch .part.sel path,.sch .part.sel line,.sch .part.sel polygon,.sch .part.sel rect:not(.hit){stroke:var(--copper)}
+.sch .part.sel text,.sch .part:hover text{fill:var(--copper)}
+.sch polygon,.sch rect:not(.hit){stroke:#CFE0D4;stroke-width:2;fill:none}
+.sch .dot{fill:#CFE0D4}
+
+/* pcb */
+.toggles{display:flex;gap:1rem;flex-wrap:wrap}
+.toggles label{display:flex;align-items:center;gap:.4rem;cursor:pointer;color:var(--ink)}
+.toggles input{accent-color:var(--copper);width:16px;height:16px}
+.pcb g{transition:opacity .35s}
+.pcb.no-top .l-top,.pcb.no-bot .l-bot,.pcb.no-silk .l-silk{opacity:0}
+
+/* firmware */
+.code{font-family:var(--mono);font-size:.8rem;line-height:1.75;background:#06110C;border-radius:12px;padding:1rem;overflow-x:auto;white-space:pre;color:#CFE0D4}
+.kw{color:#E7A0D0}.fn{color:#8CC8FF}.str{color:#A8E08F}.num{color:var(--copper)}.cm{color:#5F7B6C}
+.flashrow{display:flex;align-items:center;gap:1rem;margin-top:1rem}
+.bar{flex:1;height:8px;border-radius:4px;background:var(--board3);overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--copper);box-shadow:0 0 10px var(--copper)}
+.serial{margin-top:.9rem;font-family:var(--mono);font-size:.78rem;line-height:1.7;background:#06110C;border-radius:12px;padding:.8rem 1rem;height:150px;overflow:auto;color:#CFE0D4;white-space:pre-wrap}
+
+/* model + field canvases */
+.demo canvas{width:100%;display:block;border-radius:12px;background:#06110C}
+.ctrl{display:flex;align-items:center;gap:1rem;margin-top:1rem;flex-wrap:wrap}
+.ctrl input[type=range]{flex:1;min-width:140px;accent-color:var(--copper)}
+.readout{font-family:var(--mono);font-size:1.3rem;color:var(--copper);letter-spacing:.08em}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-top:1rem}
+.stat{background:var(--board2);border-radius:12px;padding:.7rem .9rem}
+.stat small{display:block;color:var(--muted);font-size:.8rem}
+.stat b{font-size:1.25rem;font-stretch:110%}
+.status{font-size:.85rem;padding:.25rem .7rem;border-radius:999px;background:rgba(111,191,127,.15);color:#8EDB9C}
+.status.bad{background:rgba(255,138,107,.15);color:var(--danger)}
+
+/* Estimator */
+.est{margin-top:3rem;display:grid;grid-template-columns:1.2fr .8fr;gap:2rem;align-items:start}
+.svc-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.svc{text-align:left;display:flex;flex-direction:column;justify-content:flex-start;background:var(--board);border:2px solid var(--line);border-radius:16px;padding:1.2rem 1.25rem;cursor:pointer;transition:border-color .2s,background .2s,transform .15s}
+.svc:hover{transform:translateY(-2px);border-color:var(--line2)}
+.svc.on{border-color:var(--copper);background:var(--board2)}
+.svc h3{font-size:1.15rem;font-stretch:112%}
+.svc p{margin-top:.4rem;color:var(--muted);font-size:.93rem}
+.svc em{display:block;margin-top:.7rem;font-style:normal;color:var(--copper);font-size:.9rem;font-weight:600}
+.opts{margin-top:1.5rem;background:var(--board);border-radius:16px;padding:1.25rem;border:1px solid var(--line)}
+.opts h4{font-size:1rem;margin-bottom:.8rem}
+.cx{display:flex;gap:.5rem;flex-wrap:wrap}
+.cx button{border:1px solid var(--line2);background:none;border-radius:999px;padding:.45rem 1rem;cursor:pointer}
+.cx button.on{background:var(--copper);color:#1B1406;border-color:var(--copper);font-weight:650}
+.addons{margin-top:1.2rem;display:grid;gap:.6rem}
+.addons label{display:flex;justify-content:space-between;gap:1rem;align-items:center;cursor:pointer;padding:.6rem .8rem;border-radius:10px;background:var(--board2)}
+.addons label.dis{opacity:.4;cursor:not-allowed}
+.addons input{accent-color:var(--copper);width:17px;height:17px;margin-right:.6rem}
+.addons span{display:flex;align-items:center}
+.addons small{color:var(--muted)}
+.quote{position:sticky;top:90px;background:linear-gradient(160deg,var(--board3),var(--board));border:1px solid var(--line2);border-radius:20px;padding:1.75rem;box-shadow:0 30px 80px rgba(0,0,0,.4)}
+.quote small{color:var(--muted)}
+.quote .big{font-size:clamp(2rem,3.4vw,2.8rem);font-weight:850;font-stretch:118%;line-height:1.1;margin:.3rem 0 1rem;color:var(--copper)}
+.quote ul{list-style:none;border-top:1px solid var(--line);margin-bottom:1.5rem}
+.quote li{display:flex;justify-content:space-between;padding:.6rem 0;border-bottom:1px solid var(--line);font-size:.95rem}
+.quote li span:first-child{color:var(--muted)}
+.quote .fine{display:block;margin-top:1rem;font-size:.8rem}
+
+/* Work */
+.filters{margin-top:2.5rem;display:flex;gap:.5rem;flex-wrap:wrap}
+.filters button{border:1px solid var(--line2);background:none;border-radius:999px;padding:.45rem 1.05rem;cursor:pointer;transition:background .2s}
+.filters button.on{background:var(--ink);color:var(--bg);border-color:var(--ink);font-weight:650}
+.jobs{margin-top:2rem;display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
+.job{background:var(--board);border:1px solid var(--line);border-radius:18px;overflow:hidden;transition:border-color .2s,opacity .3s}
+.job.hide{display:none}
+.job summary{list-style:none;cursor:pointer;padding:1.5rem;display:grid;grid-template-columns:auto 1fr auto;gap:1.1rem;align-items:start}
+.job summary::-webkit-details-marker{display:none}
+.job:hover{border-color:var(--line2)}
+.job[open]{border-color:var(--copper)}
+.glyph{width:54px;height:54px;border-radius:14px;background:var(--board3);display:grid;place-items:center}
+.glyph svg{width:30px;height:30px;stroke:var(--copper);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.job h3{font-size:1.2rem;font-stretch:110%;line-height:1.25}
+.job .stack{margin-top:.35rem;color:var(--muted);font-size:.9rem}
+.plus{width:30px;height:30px;border-radius:50%;border:1px solid var(--line2);display:grid;place-items:center;transition:transform .25s}
+.job[open] .plus{transform:rotate(45deg);border-color:var(--copper);color:var(--copper)}
+.job .body{padding:0 1.5rem 1.5rem 5.9rem}
+.job dt{font-weight:700;font-size:.9rem;color:var(--copper);margin-top:.8rem}
+.job dd{color:var(--muted)}
+
+/* Who */
+.who{margin-top:3rem;display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+.who > div{border-radius:20px;padding:2rem;background:var(--board);border:1px solid var(--line);position:relative;overflow:hidden}
+.who > div::after{content:"";position:absolute;right:-60px;top:-60px;width:180px;height:180px;border-radius:50%;border:22px solid var(--copper-dim);opacity:.5}
+.who h3{font-size:1.5rem;font-stretch:115%;position:relative}
+.who ul{margin-top:1rem;padding-left:1.1rem;color:var(--muted);position:relative}
+.who li{margin-top:.55rem}
+.who li::marker{color:var(--copper)}
+
+/* Process */
+.steps{margin-top:3rem;position:relative;max-width:50rem;list-style:none}
+.rail{position:absolute;left:21px;top:10px;bottom:10px;width:4px;background:var(--copper-dim);border-radius:2px}
+.rail i{display:block;width:100%;height:0;background:var(--copper);box-shadow:0 0 14px var(--copper);border-radius:2px}
+.steps li{position:relative;display:grid;grid-template-columns:46px 1fr;gap:1.4rem;padding:1.1rem 0}
+.steps li b.n{width:46px;height:46px;border-radius:50%;background:var(--bg);border:5px solid var(--copper-dim);display:grid;place-items:center;font-stretch:120%;font-size:.95rem;transition:border-color .3s,box-shadow .3s,color .3s;color:var(--muted);position:relative;z-index:1}
+.steps li.lit b.n{border-color:var(--copper);color:var(--ink);box-shadow:0 0 18px rgba(224,179,90,.5)}
+.steps h3{font-size:1.2rem;font-stretch:110%;margin-top:.55rem}
+.steps p{color:var(--muted)}
+
+/* About */
+.about{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
+.about p{margin-top:1.2rem;color:var(--muted);max-width:56ch}
+.about p.lead{color:var(--ink);font-size:1.25rem}
+.skills{display:flex;flex-wrap:wrap;gap:.6rem}
+.skills span{padding:.55rem 1rem;border-radius:12px;background:var(--board);border:1px solid var(--line2);font-size:.95rem;transition:border-color .2s,color .2s}
+.skills span:hover{border-color:var(--copper);color:var(--copper)}
+
+/* Contact */
+.contact{background:radial-gradient(90% 120% at 100% 0%,var(--board2),var(--bg) 60%)}
+.cgrid{margin-top:3rem;display:grid;grid-template-columns:1fr 1fr;gap:3rem}
+form{display:grid;gap:1rem}
+form label{display:grid;gap:.4rem;font-size:.92rem;color:var(--muted)}
+form input,form select,form textarea{background:var(--board);border:1px solid var(--line2);border-radius:12px;padding:.8rem 1rem;color:var(--ink)}
+form input:focus,form select:focus,form textarea:focus{outline:none;border-color:var(--copper)}
+form textarea{min-height:120px;resize:vertical}
+.links{display:grid;gap:.8rem;align-content:start}
+.links a{display:flex;justify-content:space-between;align-items:center;padding:1.1rem 1.3rem;border-radius:14px;background:var(--board);border:1px solid var(--line);text-decoration:none;font-weight:600;transition:border-color .2s,transform .15s}
+.links a:hover{border-color:var(--copper);transform:translateX(4px)}
+.links a small{color:var(--muted);font-weight:400}
+footer{padding:2rem 0;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem}
+footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+
+/* v3 additions */
+[hidden]{display:none!important}
+.ros .lbl{font-size:10px;paint-order:stroke;stroke:#0C2A1F;stroke-width:5px;stroke-linejoin:round}
+.seg{display:inline-flex;flex-wrap:wrap;gap:.25rem;background:#06110C;border:1px solid var(--line);border-radius:999px;padding:.25rem}
+.seg button{border:0;background:none;border-radius:999px;padding:.4rem .85rem;cursor:pointer;font-size:.85rem;color:var(--muted);transition:background .2s,color .2s}
+.seg button:hover{color:var(--ink)}
+.seg button.on{background:var(--copper);color:#1B1406;font-weight:650}
+.demo-cap .seg{margin-bottom:.25rem}
+.sub{display:none}.sub.on{display:block;animation:panelIn .3s ease-out}
+.loupe-wrap{position:relative;border-radius:12px;overflow:hidden;background:#06110C;min-height:260px;display:grid;place-items:center;cursor:zoom-in;touch-action:none}
+.loupe-wrap img{width:100%;height:auto;display:block}
+.loupe{position:absolute;width:170px;height:170px;border-radius:50%;border:3px solid var(--copper);box-shadow:0 10px 40px rgba(0,0,0,.6),0 0 0 6px rgba(224,179,90,.15);pointer-events:none;opacity:0;transition:opacity .15s;background-repeat:no-repeat;transform:translate(-50%,-50%)}
+.loupe-wrap.zoom .loupe{opacity:1}
+.ph{position:absolute;inset:0;display:none;place-items:center;text-align:center;padding:2rem;color:var(--muted);font-size:.95rem;border:2px dashed var(--line2);border-radius:12px}
+.ph code{font-family:var(--mono);color:var(--copper)}
+.loupe-wrap.empty .ph{display:grid}.loupe-wrap.empty{cursor:default}
+.cap-note{margin-top:.6rem;font-size:.82rem;color:var(--muted)}
+.code{max-height:330px;overflow:auto}
+.code .ln{display:inline-block;width:2.2em;color:#3C5548;user-select:none}
+.dets{margin-top:.8rem;display:flex;flex-wrap:wrap;gap:.4rem}
+.dets span{font-family:var(--mono);font-size:.75rem;padding:.2rem .55rem;border-radius:6px;background:var(--board2)}
+.ros text{font-family:var(--mono);font-size:11px;fill:var(--muted)}
+.ros .node rect{fill:#06110C;stroke:var(--copper);stroke-width:1.6;transition:stroke .3s,fill .3s}
+.ros .node text{fill:var(--ink);font-size:12px}
+.ros .node.bad rect{stroke:var(--danger);fill:#2A120C}
+.ros .edge{fill:none;stroke:var(--copper-dim);stroke-width:2}
+.ros .msg{fill:var(--signal)}
+.hz{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin-top:.8rem}
+.hz div{background:var(--board2);border-radius:10px;padding:.5rem .7rem;font-size:.8rem}
+.hz small{display:block;color:var(--muted);font-family:var(--mono);font-size:.72rem}
+.hz b{font-size:1rem}
+.log{margin-top:.8rem;font-family:var(--mono);font-size:.76rem;line-height:1.65;background:#06110C;border-radius:12px;padding:.7rem .9rem;height:120px;overflow:auto;color:#CFE0D4;white-space:pre-wrap}
+.lockwrap{display:grid;grid-template-columns:150px 1fr;gap:1.25rem;align-items:center}
+.lock svg{width:100%;height:auto}
+.lock .shackle{fill:none;stroke:#CFE0D4;stroke-width:12;stroke-linecap:round;transition:transform .4s cubic-bezier(.5,0,.2,1.4)}
+.lock.open .shackle{transform:translateY(-22px)}
+.lock .body{fill:var(--board3);stroke:var(--copper);stroke-width:3;transition:stroke .3s}
+.lock.alarm .body{stroke:var(--danger)}
+.lock .led{fill:#6FBF7F;transition:fill .3s}
+.lock.alarm .led{fill:var(--danger)}.lock.open .led{fill:var(--signal)}
+.btns{display:flex;flex-wrap:wrap;gap:.5rem}
+@media (max-width:900px){
+  .hz{grid-template-columns:repeat(2,1fr)}
+  .lockwrap{grid-template-columns:100px 1fr}
+  .loupe{width:120px;height:120px}
+}
+@media (max-width:900px){
+  .nav nav a:not(.btn){display:none}
+  .hero .wrap,.panel,.est,.about,.cgrid{grid-template-columns:1fr}
+  .hero::after{background:linear-gradient(180deg,rgba(7,20,15,.6),rgba(7,20,15,.85))}
+  .term pre{height:220px}
+  .jobs,.who,.svc-grid{grid-template-columns:1fr}
+  .quote{position:static}
+  .pad small{display:none}
+  .pad i{width:44px;height:44px;border-width:6px}
+  .pads::before,.pads .fill{top:20px}
+  .pad strong{font-size:.8rem}
+  .job .body{padding:0 1.5rem 1.5rem}
+  .sec{padding:4.5rem 0}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a class="brand" href="#top"><i></i>Chetan [Surname]</a>
+    <nav aria-label="Sections">
+      <a href="#stack">What I build</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#work">Work</a>
+      <a href="#process">Process</a>
+      <!-- EDIT: Calendly / Topmate link -->
+      <a class="btn primary small" href="https://calendly.com/YOUR-LINK">Book a call</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+<!-- HERO -->
+<section class="hero">
+  <canvas id="pcb" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <div>
+      <h1>From the first resistor to the last line of code.</h1>
+      <p class="rotator">Hardware + edge-AI for <b id="rot">smart meters</b></p>
+      <div class="actions">
+        <a class="btn primary" href="https://calendly.com/YOUR-LINK">Book a free 20-min call</a>
+        <a class="btn" href="#pricing">Estimate your project</a>
+      </div>
+      <p class="hint" id="hint">Move over the board. Click to send a signal.</p>
+    </div>
+    <div class="term" aria-label="Sample device boot log">
+      <div class="term-bar"><span></span><span></span><span></span><em>Serial monitor, 115200 baud</em></div>
+      <pre id="term"></pre>
+    </div>
+  </div>
+</section>
+
+<!-- STACK EXPLORER -->
+<section class="sec" id="stack">
+  <div class="wrap">
+    <h2>One engineer. The whole chain.</h2>
+    <p class="intro">Most products stall at the handoff between the hardware person, the firmware person and the AI person. I am all three. Tap each stage to try it.</p>
+
+    <div class="pads" role="tablist" aria-label="Product stages">
+      <span class="fill" id="fill"></span>
+      <button class="pad on" role="tab" aria-selected="true" data-i="0"><i></i><strong>Schematic</strong><small>parts, power, protection</small></button>
+      <button class="pad" role="tab" aria-selected="false" data-i="1"><i></i><strong>PCB</strong><small>layout, bring-up</small></button>
+      <button class="pad" role="tab" aria-selected="false" data-i="2"><i></i><strong>Firmware</strong><small>ESP32, STM32, RTOS</small></button>
+      <button class="pad" role="tab" aria-selected="false" data-i="3"><i></i><strong>Model</strong><small>vision, TinyML</small></button>
+      <button class="pad" role="tab" aria-selected="false" data-i="4"><i></i><strong>Field</strong><small>ROS 2, IoT, telemetry</small></button>
+    </div>
+
+    <!-- Schematic -->
+    <div class="panel on" role="tabpanel" data-p="0">
+      <div>
+        <h3>Every part has a reason</h3>
+        <p>I choose components for the real conditions your product will face: dirty power, heat, cost targets and supply availability. Click any part on the schematic to see why it is there.</p>
+        <div class="chips"><span>KiCad</span><span>Power design</span><span>Protection</span><span>BOM costing</span></div>
+      </div>
+      <div class="demo">
+        <div class="demo-cap"><span>12 V input stage for an ESP32 sensor node</span><span>Click a part</span></div>
+        <svg class="sch" viewBox="0 0 520 270" id="sch">
+          <line x1="60" y1="110" x2="110" y2="110"/><line x1="140" y1="110" x2="200" y2="110"/>
+          <line x1="290" y1="110" x2="400" y2="110"/>
+          <circle class="dot" cx="80" cy="110" r="4"/><circle class="dot" cx="170" cy="110" r="4"/><circle class="dot" cx="340" cy="110" r="4"/>
+          <line x1="80" y1="110" x2="80" y2="150"/><line x1="80" y1="180" x2="80" y2="205"/><line x1="80" y1="235" x2="80" y2="244"/>
+          <line x1="80" y1="192" x2="130" y2="192"/><circle class="dot" cx="80" cy="192" r="4"/>
+          <text x="136" y="196">ADC</text>
+          <text x="406" y="114">3V3 to ESP32</text>
+          <path d="M70,244H90M74,248H86M78,252H82"/>
+          <line x1="170" y1="148" x2="170" y2="190"/><path d="M160,190H180M164,194H176M168,198H172"/>
+          <line x1="245" y1="135" x2="245" y2="190"/><path d="M235,190H255M239,194H251M243,198H247"/>
+          <line x1="340" y1="148" x2="340" y2="190"/><path d="M330,190H350M334,194H346M338,198H342"/>
+
+          <g class="part" tabindex="0" data-k="J1"><rect class="hit" x="10" y="80" width="56" height="70"/><rect x="20" y="92" width="40" height="36" rx="4"/><text x="18" y="146">J1 12V</text></g>
+          <g class="part" tabindex="0" data-k="D1"><rect class="hit" x="104" y="80" width="42" height="56"/><polygon points="112,98 112,122 136,110"/><line x1="138" y1="98" x2="138" y2="122"/><text x="112" y="90">D1</text></g>
+          <g class="part" tabindex="0" data-k="C1"><rect class="hit" x="150" y="112" width="40" height="40"/><line x1="170" y1="110" x2="170" y2="138"/><line x1="156" y1="138" x2="184" y2="138"/><line x1="156" y1="147" x2="184" y2="147"/><text x="188" y="146">C1</text></g>
+          <g class="part" tabindex="0" data-k="U1"><rect class="hit" x="195" y="78" width="100" height="62"/><rect x="200" y="85" width="90" height="50" rx="4"/><text x="222" y="108">U1</text><text x="214" y="124">buck</text></g>
+          <g class="part" tabindex="0" data-k="C2"><rect class="hit" x="320" y="112" width="40" height="40"/><line x1="340" y1="110" x2="340" y2="138"/><line x1="326" y1="138" x2="354" y2="138"/><line x1="326" y1="147" x2="354" y2="147"/><text x="358" y="146">C2</text></g>
+          <g class="part" tabindex="0" data-k="R"><rect class="hit" x="56" y="146" width="50" height="94"/><path d="M80,150l8,4l-16,6l16,6l-16,6l16,6l-8,2"/><path d="M80,205l8,4l-16,6l16,6l-16,6l16,6l-8,2"/><text x="92" y="170">R1</text><text x="92" y="225">R2</text></g>
+        </svg>
+        <div class="note" id="schNote"><b>D1</b> Schottky diode for reverse-polarity protection. Its low forward drop (about 0.3 V) wastes less power than a standard diode.</div>
+      </div>
+    </div>
+
+    <!-- PCB -->
+    <div class="panel" role="tabpanel" data-p="1">
+      <div>
+        <h3>Boards that pass bring-up the first time</h3>
+        <p>Clean power planes, short return paths, antenna keep-outs and test points where you will need them. Inspect a real board up close, or switch to the layer view to see how one is built.</p>
+        <div class="chips"><span>2 to 6 layer</span><span>DFM for JLC/PCBWay</span><span>RF keep-out</span><span>Bring-up and debug</span></div>
+      </div>
+      <div class="demo">
+        <div class="demo-cap">
+          <div class="seg" id="pcbSeg"><button class="on" data-v="photo">Real board</button><button data-v="layers">Layer view</button></div>
+          <div class="toggles" id="layerToggles" hidden>
+            <label><input type="checkbox" data-l="top" checked>Top</label>
+            <label><input type="checkbox" data-l="bot" checked>Bottom</label>
+            <label><input type="checkbox" data-l="silk" checked>Silk</label>
+          </div>
+        </div>
+        <div class="sub on" data-pv="photo">
+          <div class="loupe-wrap" id="loupeWrap">
+            <!-- EDIT: put your board photo at assets/pcb.jpg (or change the src) -->
+            <img id="pcbPhoto" src="assets/pcb.jpg" alt="PCB designed and assembled by Chetan">
+            <div class="loupe" id="loupe"></div>
+            <div class="ph"><span>Add your board photo at <code>assets/pcb.jpg</code></span></div>
+          </div>
+          <p class="cap-note" id="pcbCap">Hover or drag across the board to magnify</p>
+        </div>
+        <div class="sub" data-pv="layers">
+<svg class="pcb" id="pcbsvg" viewBox="0 0 520 310">
+          <rect x="10" y="10" width="500" height="290" rx="18" fill="#0F4A34" stroke="#1C6247" stroke-width="2"/>
+          <g fill="#07140F"><circle cx="36" cy="36" r="9"/><circle cx="484" cy="36" r="9"/><circle cx="36" cy="274" r="9"/><circle cx="484" cy="274" r="9"/></g>
+          <g class="l-bot" stroke="#6C95C2" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".85">
+            <path d="M120,250H260L290,220H380"/><path d="M150,70V120L180,150"/><path d="M430,90V200L400,230"/>
+            <path d="M70,160H100L130,190H200" stroke-width="12"/>
+          </g>
+          <g class="l-top" fill="none" stroke="#E0B35A" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M70,120H150L175,95H240"/><path d="M300,120H340L360,100H420"/><path d="M300,140H350L380,170H440"/>
+            <path d="M300,160H320L350,190V230"/><path d="M240,160H200L180,180V230"/><path d="M270,80V50H380"/>
+            <path d="M70,210H110" stroke-width="12"/>
+          </g>
+          <g class="l-top" fill="#E0B35A">
+            <rect x="240" y="80" width="60" height="100" rx="4" fill="none" stroke="#E0B35A" stroke-width="3"/>
+            <g id="qfn"></g>
+            <rect x="40" y="105" width="30" height="30" rx="3"/><rect x="40" y="195" width="30" height="30" rx="3"/>
+            <rect x="170" y="225" width="18" height="12"/><rect x="170" y="245" width="18" height="12"/>
+            <rect x="340" y="225" width="18" height="12"/><rect x="340" y="245" width="18" height="12"/>
+            <rect x="380" y="40" width="100" height="22" rx="3" opacity=".5"/>
+          </g>
+          <g fill="#07140F" stroke="#E0B35A" stroke-width="3">
+            <circle cx="180" cy="150" r="6"/><circle cx="200" cy="190" r="6"/><circle cx="380" cy="220" r="6"/><circle cx="400" cy="230" r="6"/><circle cx="120" cy="250" r="6"/><circle cx="150" cy="70" r="6"/>
+          </g>
+          <g class="l-silk" fill="none" stroke="#F1F4EE" stroke-width="1.6">
+            <rect x="232" y="72" width="76" height="116" rx="6"/><rect x="34" y="99" width="42" height="42" rx="4"/><rect x="34" y="189" width="42" height="42" rx="4"/>
+            <rect x="164" y="220" width="30" height="42" rx="3"/><rect x="334" y="220" width="30" height="42" rx="3"/>
+            <path d="M372,32H488V70H372Z" stroke-dasharray="5 5"/>
+          </g>
+          <g class="l-silk" fill="#F1F4EE" font-family="JetBrains Mono,monospace" font-size="13">
+            <text x="258" y="200">U1</text><text x="40" y="160">J1</text><text x="40" y="250">J2</text><text x="165" y="280">C1</text><text x="335" y="280">C2</text>
+            <text x="384" y="86" font-size="11">antenna keep-out</text><text x="410" y="286" font-size="11">rev B</text>
+          </g>
+        </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Firmware -->
+    <div class="panel" role="tabpanel" data-p="2">
+      <div>
+        <h3>Firmware that survives the field</h3>
+        <p>Bare-metal, HAL or RTOS, in C or modern C++. Watchdogs, brown-out handling, OTA updates and low-power sleep, written so devices run for months without a site visit. Pick a platform and flash it.</p>
+        <div class="chips"><span>ESP-IDF</span><span>STM32 HAL</span><span>Pico SDK</span><span>FreeRTOS</span><span>C / C++17</span><span>OTA</span></div>
+      </div>
+      <div class="demo">
+        <div class="demo-cap">
+          <div class="seg" id="fwSeg">
+            <button class="on" data-f="esp32">ESP32</button><button data-f="stm32">STM32</button><button data-f="rp2040">RP2040</button><button data-f="rtos">FreeRTOS</button><button data-f="cpp">C++</button>
+          </div>
+          <span id="fwFile">main.c</span>
+        </div>
+        <div class="code" id="fwCode"></div>
+        <div class="flashrow"><button class="btn primary small" id="flashBtn">Flash to board</button><div class="bar"><i id="flashBar"></i></div></div>
+        <div class="serial" id="serial" aria-live="polite"><span class="t-d">Board connected. Press flash.</span></div>
+      </div>
+    </div>
+
+    <!-- Model -->
+    <div class="panel" role="tabpanel" data-p="3">
+      <div>
+        <h3>AI that runs on the device</h3>
+        <p>Detection and segmentation models trained on your data, then optimised for the hardware you can afford: an ESP32, a Raspberry Pi or a dedicated AI accelerator. No cloud bill, no internet dependency. Pick a use case and move the threshold to see what the device trusts.</p>
+        <div class="chips"><span>YOLOv8</span><span>Segmentation</span><span>TFLite-Micro</span><span>Hailo-8</span><span>OpenCV</span><span>PyTorch</span></div>
+      </div>
+      <div class="demo">
+        <div class="demo-cap">
+          <div class="seg" id="mdSeg">
+            <button class="on" data-m="weeds">Crop vs weed</button><button data-m="faces">Attendance</button><button data-m="defects">Defect QA</button><button data-m="digits">Meter digits</button>
+          </div>
+          <span class="readout" id="reading"></span>
+        </div>
+        <canvas id="model" height="250"></canvas>
+        <div class="dets" id="dets"></div>
+        <div class="ctrl">
+          <label for="th">Threshold <b id="thv">0.80</b></label>
+          <input type="range" id="th" min="0.5" max="0.99" step="0.01" value="0.8">
+          <button class="btn small" id="infer">Run inference</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Field -->
+    <div class="panel" role="tabpanel" data-p="4">
+      <div>
+        <h3>Deployed, connected, monitored</h3>
+        <p>Robots on ROS 2 with real safety layers. Sensor networks on LoRa, Wi-Fi or cellular. Devices that report health, raise alerts on their own and accept remote updates. Try each one.</p>
+        <div class="chips"><span>ROS 2</span><span>MQTT</span><span>LoRa / LoRaWAN</span><span>BLE</span><span>LTE</span><span>Dashboards</span></div>
+      </div>
+      <div class="demo">
+        <div class="demo-cap">
+          <div class="seg" id="fdSeg">
+            <button class="on" data-d="ros">ROS 2</button><button data-d="tele">Telemetry</button><button data-d="lora">LoRa</button><button data-d="lock">Smart lock</button>
+          </div>
+          <span class="status" id="fstatus">Normal</span>
+        </div>
+
+        <div class="sub on" data-fv="ros">
+          <svg class="ros" id="ros" viewBox="0 0 640 250">
+            <g id="edges"></g><g id="msgs"></g><g id="nodes"></g>
+          </svg>
+          <div class="hz" id="hz"></div>
+          <div class="ctrl"><button class="btn small" id="estop">Press e-stop</button><span style="color:var(--muted);font-size:.9rem">Hardware stop overrides software</span></div>
+        </div>
+
+        <div class="sub" data-fv="tele">
+          <canvas id="field" height="190"></canvas>
+          <div class="stats">
+            <div class="stat"><small>Motor temp</small><b id="sTemp">24.0 °C</b></div>
+            <div class="stat"><small>Signal</small><b id="sRssi">-71 dBm</b></div>
+            <div class="stat"><small>Uptime</small><b id="sUp">41d 06:12</b></div>
+          </div>
+          <div class="ctrl"><button class="btn small" id="fault">Inject fault</button><span style="color:var(--muted);font-size:.9rem">Alert fires above 32 °C</span></div>
+        </div>
+
+        <div class="sub" data-fv="lora">
+          <canvas id="lora" height="230"></canvas>
+          <div class="ctrl">
+            <div class="seg" id="sfSeg"><button data-sf="7">SF7</button><button class="on" data-sf="9">SF9</button><button data-sf="12">SF12</button></div>
+            <span style="color:var(--muted);font-size:.9rem" id="sfInfo"></span>
+          </div>
+          <div class="log" id="loraLog"></div>
+        </div>
+
+        <div class="sub" data-fv="lock">
+          <div class="lockwrap">
+            <div class="lock" id="lock">
+              <svg viewBox="0 0 120 150"><path class="shackle" d="M32,70V45a28,28 0 0 1 56,0V70"/><rect class="body" x="14" y="66" width="92" height="74" rx="14"/><circle class="led" cx="60" cy="96" r="8"/><rect x="56" y="108" width="8" height="18" rx="3" fill="#CFE0D4"/></svg>
+            </div>
+            <div>
+              <div class="btns">
+                <button class="btn small primary" id="lkUnlock">Unlock from app</button>
+                <button class="btn small" id="lkPin">Enter wrong PIN</button>
+                <button class="btn small" id="lkTamper">Tamper</button>
+              </div>
+              <div class="stats" style="grid-template-columns:repeat(2,1fr)">
+                <div class="stat"><small>Battery</small><b id="lkBatt">87%</b></div>
+                <div class="stat"><small>Link</small><b>BLE + Wi-Fi</b></div>
+              </div>
+            </div>
+          </div>
+          <div class="log" id="lockLog"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ESTIMATOR -->
+<section class="sec" id="pricing">
+  <div class="wrap">
+    <h2>Estimate your project in 30 seconds</h2>
+    <p class="intro">Fixed scope, written proposal, no hourly surprises. Pick what fits and get a ballpark before we talk.</p>
+    <div class="est">
+      <div>
+        <div class="svc-grid" id="svcs">
+          <button class="svc on" data-s="review"><h3>Design review</h3><p>Audit of your schematic, PCB, firmware or ROS 2 setup, with a written report and a call.</p><em>from ₹30,000</em></button>
+          <button class="svc" data-s="sprint"><h3>Feasibility sprint</h3><p>A working edge-AI demo, a parts list and an honest verdict on your idea.</p><em>from ₹1,50,000</em></button>
+          <button class="svc" data-s="pilot"><h3>Plant data pilot</h3><p>Retrofit sensing and camera reading on one production line, with a dashboard.</p><em>from ₹3,00,000</em></button>
+          <button class="svc" data-s="cto"><h3>Fractional hardware CTO</h3><p>Monthly advisory on architecture, parts, vendors and reviews.</p><em>from ₹40,000 / month</em></button>
+        </div>
+        <div class="opts">
+          <h4>How complex is it?</h4>
+          <div class="cx" id="cx"><button class="on" data-c="1">Simple</button><button data-c="1.4">Moderate</button><button data-c="1.9">Complex</button></div>
+          <div class="addons" id="addons">
+            <label><span><input type="checkbox" data-a="enc">Enclosure design (3D printed)</span><small>+ ₹40k, 1 wk</small></label>
+            <label><span><input type="checkbox" data-a="batch">Small batch, 10 units</span><small>+ ₹60k, 2 wk</small></label>
+            <label><span><input type="checkbox" data-a="docs">Documentation and team training</span><small>+ ₹20k</small></label>
+          </div>
+        </div>
+      </div>
+      <aside class="quote" aria-live="polite">
+        <small>Estimated range</small>
+        <div class="big" id="qPrice">₹30,000 to ₹60,000</div>
+        <ul>
+          <li><span>Service</span><span id="qSvc">Design review</span></li>
+          <li><span>Timeline</span><span id="qTime">About 1 week</span></li>
+          <li><span>Payment</span><span>50% advance</span></li>
+        </ul>
+        <!-- EDIT: email in the script below (CONTACT_EMAIL) -->
+        <a class="btn primary" id="qBtn" href="#">Send me this estimate</a>
+        <small class="fine">Ballpark only. Final price comes in a written proposal after a free call.</small>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- WORK -->
+<section class="sec" id="work">
+  <div class="wrap">
+    <h2>Selected builds</h2>
+    <p class="intro">Recent projects, built end to end. Open any card for the details.</p>
+    <div class="filters" id="filters">
+      <button class="on" data-f="all">All</button><button data-f="vision">Vision</button><button data-f="wireless">Wireless</button><button data-f="firmware">Firmware</button><button data-f="motion">Motion</button>
+    </div>
+    <!-- EDIT: add real numbers (accuracy, cost, latency) to the Result lines -->
+    <div class="jobs">
+      <details class="job" data-t="vision wireless firmware">
+        <summary><span class="glyph"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2"/><circle cx="12" cy="12.5" r="3.5"/><path d="M8 6l1.5-2h5L16 6"/></svg></span><span><h3>Edge camera vision, from microcontroller to AI accelerator</h3><p class="stack">ESP32-CAM, ESP32-S3, Raspberry Pi 5, Hailo-8, TFLite-Micro, YOLOv8-seg, OpenCV</p></span><span class="plus">+</span></summary>
+        <dl class="body">
+          <dt>Microcontroller vision</dt><dd>Image classification running directly on ESP32 camera boards with TFLite-Micro, at low power, sending only results over Wi-Fi or cellular.</dd>
+          <dt>Accelerated detection</dt><dd>Real-time plant and weed segmentation on Raspberry Pi 5 with a Hailo-8 accelerator, using YOLOv8-seg, a colour-index pre-filter to cut compute, and a validation gate that checks false positives before any actuator fires.</dd>
+          <dt>Face recognition</dt><dd>Face detection and recognition pipeline for automated attendance on edge hardware.</dd>
+          <dt>What it means for you</dt><dd>I pick the cheapest hardware that meets your accuracy and speed target, from a ₹500 microcontroller to a dedicated AI accelerator.</dd>
+        </dl>
+      </details>
+      <details class="job" data-t="wireless firmware motion">
+        <summary><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="19" cy="18" r="2"/><path d="M7 11l10-4M7 13l10 4M19 8v8"/></svg></span><span><h3>Wireless motion-sensing mesh for interactive boxing</h3><p class="stack">ESP32, ESP-NOW, MPU-6500, TTP223</p></span><span class="plus">+</span></summary>
+        <dl class="body"><dt>Problem</dt><dd>Detect and sync punches across several targets with low latency and no router.</dd><dt>Approach</dt><dd>ESP-NOW mesh between nodes, fusing IMU and touch data for reliable hit detection.</dd><dt>Result</dt><dd>Working proof of concept with multi-node sync.</dd></dl>
+      </details>
+      <details class="job" data-t="motion firmware">
+        <summary><span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l6 4"/></svg></span><span><h3>Low-cost optical rotary encoder</h3><p class="stack">TCRT5000, Gray code, custom disc</p></span><span class="plus">+</span></summary>
+        <dl class="body"><dt>Problem</dt><dd>The original 11-state encoding table had a flaw that caused wrong position reads.</dd><dt>Approach</dt><dd>Found the fault and redesigned the disc as a 6-zone Gray code pattern.</dd><dt>Result</dt><dd>Reliable absolute position from cheap IR sensors.</dd></dl>
+      </details>
+      <details class="job" data-t="motion firmware">
+        <summary><span class="glyph"><svg viewBox="0 0 24 24"><path d="M3 20h18M6 20V8h12v12M9 8V4h6v4M12 12v4"/></svg></span><span><h3>Laser engraver motion system repair</h3><p class="stack">Arduino firmware, Python serial control</p></span><span class="plus">+</span></summary>
+        <dl class="body"><dt>Problem</dt><dd>The XY axes lost sync and homed twice on start-up.</dd><dt>Approach</dt><dd>Fixed serial handshaking on the host and a homing bug in the firmware.</dd><dt>Result</dt><dd>Repeatable motion and a clean start-up every time.</dd></dl>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- WHO -->
+<section class="sec">
+  <div class="wrap">
+    <h2>Who I work with</h2>
+    <div class="who">
+      <div><h3>Hardware and robotics startups</h3><ul><li>Your prototype works on the bench but not in the field</li><li>You need a board, firmware and a model, but can't hire three people yet</li><li>You want a second opinion before paying for a production run</li></ul></div>
+      <div><h3>Process plants</h3><ul><li>Sugar, distillery and food processing lines</li><li>Manual readings and logbooks you want as live data</li><li>Camera-based quality checks on existing equipment</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="sec" id="process">
+  <div class="wrap">
+    <h2>How a project runs</h2>
+    <ol class="steps" id="steps">
+      <span class="rail"><i id="railFill"></i></span>
+      <li><b class="n">1</b><div><h3>Free 20-minute call</h3><p>You describe the problem. I tell you honestly whether I'm the right fit.</p></div></li>
+      <li><b class="n">2</b><div><h3>Written proposal within 48 hours</h3><p>Scope, deliverables, timeline and three pricing options.</p></div></li>
+      <li><b class="n">3</b><div><h3>Agreement and 50% advance</h3><p>A short statement of work so both sides know exactly what's included.</p></div></li>
+      <li><b class="n">4</b><div><h3>Build, with weekly updates</h3><p>Photos, videos and progress notes, so you're never guessing.</p></div></li>
+      <li><b class="n">5</b><div><h3>Handover</h3><p>Design files, source code, documentation and a walkthrough call.</p></div></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="sec">
+  <div class="wrap about">
+    <div>
+      <h2>About me</h2>
+      <p class="lead">I'm Chetan, a self-taught engineer with 8+ years of building hardware products end to end.</p>
+      <p>I pick the parts, route the board, write the firmware and train the models myself. That means fewer handoffs, faster iterations and one person accountable for whether it works. Based in Pune, working with clients across India and remotely.</p>
+    </div>
+    <div class="skills">
+      <span>Embedded systems</span><span>PCB design</span><span>ROS 2</span><span>Computer vision</span><span>Edge-AI</span><span>Motor control</span><span>Power electronics</span><span>IoT</span><span>FreeRTOS</span><span>ESP32</span><span>STM32</span><span>Jetson</span><span>KiCad</span><span>Python</span><span>C / C++</span>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="sec contact" id="contact">
+  <div class="wrap">
+    <h2>Tell me what you're building</h2>
+    <p class="intro">A 20-minute call is free. You'll leave with at least one useful idea, whether or not we work together.</p>
+    <div class="cgrid">
+      <form id="cform">
+        <label>Your name<input name="name" required autocomplete="name"></label>
+        <label>Email<input name="email" type="email" required autocomplete="email"></label>
+        <label>What are you building?<textarea name="msg" required></textarea></label>
+        <label>Budget
+          <select name="budget"><option>Under ₹1 lakh</option><option>₹1 to 3 lakh</option><option>₹3 to 8 lakh</option><option>Above ₹8 lakh</option><option>Not sure yet</option></select>
+        </label>
+        <button class="btn primary" type="submit">Send message</button>
+      </form>
+      <!-- EDIT: your profile links -->
+      <div class="links">
+        <a href="https://calendly.com/YOUR-LINK">Book a call <small>20 min, free</small></a>
+        <a href="https://www.linkedin.com/in/YOUR-HANDLE">LinkedIn <small>articles and case studies</small></a>
+        <a href="https://www.instagram.com/YOUR-HANDLE">Instagram <small>build reels</small></a>
+        <a href="https://github.com/YOUR-HANDLE">GitHub <small>open-source work</small></a>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer><div class="wrap"><span>© 2026 Chetan [Surname], Pune</span><span>Designed and built by hand, like the boards.</span></div></footer>
+
+<script>
+const CONTACT_EMAIL = "you@yourdomain.com"; // EDIT
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+if (!CanvasRenderingContext2D.prototype.roundRect) CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h) { this.rect(x, y, w, h); };
+
+if (matchMedia("(pointer: coarse)").matches) document.getElementById("hint").textContent = "Tap the board to send a signal.";
+
+/* Nav background on scroll */
+const nav = document.getElementById("nav");
+addEventListener("scroll", () => nav.classList.toggle("solid", scrollY > 40), { passive: true });
+
+/* ---------- Hero PCB canvas ---------- */
+(() => {
+  const cv = document.getElementById("pcb"), ctx = cv.getContext("2d");
+  const G = 26, dirs = [[1,0],[1,1],[0,1],[-1,1],[-1,0],[-1,-1],[0,-1],[1,-1]];
+  let W, H, traces = [], pulses = [], layer, mouse = { x: -999, y: -999 }, running = true;
+
+  function build() {
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    W = cv.clientWidth; H = cv.clientHeight;
+    cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const cols = Math.ceil(W / G) + 1, rows = Math.ceil(H / G) + 1, occ = new Set();
+    traces = []; pulses = [];
+    const tries = Math.floor(cols * rows / 10);
+    for (let n = 0; n < tries; n++) {
+      let x = Math.floor(Math.random() * cols), y = Math.floor(Math.random() * rows);
+      if (occ.has(x + "," + y)) continue;
+      let d = [0, 2, 4, 6][Math.floor(Math.random() * 4)];
+      const pts = [[x, y]]; occ.add(x + "," + y);
+      const len = 4 + Math.floor(Math.random() * 20);
+      for (let s = 0; s < len; s++) {
+        if (Math.random() < 0.2) d = (d + (Math.random() < 0.5 ? 1 : 7)) % 8;
+        const nx = x + dirs[d][0], ny = y + dirs[d][1];
+        if (nx < 0 || ny < 0 || nx >= cols || ny >= rows || occ.has(nx + "," + ny)) break;
+        x = nx; y = ny; pts.push([x, y]); occ.add(x + "," + y);
+      }
+      if (pts.length < 4) continue;
+      const p = pts.map(([a, b]) => [a * G, b * G]);
+      const cum = [0];
+      for (let i = 1; i < p.length; i++) cum.push(cum[i - 1] + Math.hypot(p[i][0] - p[i - 1][0], p[i][1] - p[i - 1][1]));
+      let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
+      p.forEach(([a, b]) => { x0 = Math.min(x0, a); y0 = Math.min(y0, b); x1 = Math.max(x1, a); y1 = Math.max(y1, b); });
+      traces.push({ p, cum, len: cum[cum.length - 1], box: [x0, y0, x1, y1], w: Math.random() < 0.15 ? 3.2 : 1.6 });
+    }
+    layer = document.createElement("canvas");
+    layer.width = cv.width; layer.height = cv.height;
+    const l = layer.getContext("2d"); l.setTransform(dpr, 0, 0, dpr, 0, 0);
+    l.lineCap = "round"; l.lineJoin = "round";
+    traces.forEach(t => {
+      l.strokeStyle = "rgba(224,179,90,0.16)"; l.lineWidth = t.w;
+      l.beginPath(); t.p.forEach(([a, b], i) => i ? l.lineTo(a, b) : l.moveTo(a, b)); l.stroke();
+      [t.p[0], t.p[t.p.length - 1]].forEach(([a, b]) => {
+        l.beginPath(); l.arc(a, b, 4, 0, 7); l.fillStyle = "#07140F"; l.fill();
+        l.lineWidth = 2; l.strokeStyle = "rgba(224,179,90,0.35)"; l.stroke();
+      });
+    });
+    draw();
+  }
+  function at(t, d) {
+    let i = 1; while (i < t.cum.length - 1 && t.cum[i] < d) i++;
+    const a = t.p[i - 1], b = t.p[i], seg = t.cum[i] - t.cum[i - 1] || 1, f = Math.max(0, Math.min(1, (d - t.cum[i - 1]) / seg));
+    return [a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f];
+  }
+  function near(t, R) {
+    const [x0, y0, x1, y1] = t.box;
+    const dx = Math.max(x0 - mouse.x, 0, mouse.x - x1), dy = Math.max(y0 - mouse.y, 0, mouse.y - y1);
+    if (Math.hypot(dx, dy) > R) return 0;
+    let m = 1e9; t.p.forEach(([a, b]) => { m = Math.min(m, Math.hypot(a - mouse.x, b - mouse.y)); });
+    return m < R ? 1 - m / R : 0;
+  }
+  function spawn(t) { pulses.push({ t, d: 0, v: 2.2 + Math.random() * 2.5 }); }
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.drawImage(layer, 0, 0, W, H);
+    ctx.lineCap = "round"; ctx.lineJoin = "round";
+    traces.forEach(t => {
+      const k = near(t, 150);
+      if (k > 0) {
+        ctx.strokeStyle = `rgba(224,179,90,${0.25 + k * 0.7})`; ctx.lineWidth = t.w + k;
+        ctx.shadowColor = "rgba(224,179,90,.8)"; ctx.shadowBlur = 10 * k;
+        ctx.beginPath(); t.p.forEach(([a, b], i) => i ? ctx.lineTo(a, b) : ctx.moveTo(a, b)); ctx.stroke();
+        ctx.shadowBlur = 0;
+      }
+    });
+    pulses.forEach(p => {
+      for (let j = 0; j < 7; j++) {
+        const d = p.d - j * 7; if (d < 0) break;
+        const [x, y] = at(p.t, d);
+        ctx.beginPath(); ctx.arc(x, y, 3 - j * 0.35, 0, 7);
+        ctx.fillStyle = `rgba(255,233,174,${1 - j / 7})`; ctx.shadowColor = "#FFE9AE"; ctx.shadowBlur = j ? 0 : 14; ctx.fill();
+      }
+      ctx.shadowBlur = 0;
+    });
+  }
+  function loop() {
+    if (!running) return;
+    pulses.forEach(p => p.d += p.v);
+    pulses = pulses.filter(p => p.d < p.t.len + 50);
+    if (traces.length && pulses.length < 45 && Math.random() < 0.12) spawn(traces[Math.floor(Math.random() * traces.length)]);
+    draw(); requestAnimationFrame(loop);
+  }
+  cv.addEventListener("pointermove", e => { const r = cv.getBoundingClientRect(); mouse = { x: e.clientX - r.left, y: e.clientY - r.top }; if (reduce) draw(); });
+  cv.addEventListener("pointerleave", () => { mouse = { x: -999, y: -999 }; if (reduce) draw(); });
+  cv.addEventListener("click", () => {
+    traces.map(t => [t, near(t, 220)]).filter(a => a[1] > 0).sort((a, b) => b[1] - a[1]).slice(0, 10).forEach(([t]) => spawn(t));
+    if (reduce) draw();
+  });
+  let rt; addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(build, 200); });
+  build();
+  if (!reduce) {
+    new IntersectionObserver(([e]) => { const was = running; running = e.isIntersecting; if (running && !was) loop(); }).observe(cv);
+    loop();
+  }
+})();
+
+/* ---------- Rotating word ---------- */
+(() => {
+  const el = document.getElementById("rot");
+  const words = ["smart meters", "agricultural robots", "factory lines", "vision QA systems", "IoT sensor networks", "motor controllers"];
+  if (reduce) return;
+  let w = 0, c = words[0].length, del = true;
+  (function tick() {
+    const word = words[w];
+    if (del) { c--; if (c <= 0) { del = false; w = (w + 1) % words.length; } }
+    else { c++; if (c >= words[w].length) { del = true; el.textContent = words[w]; return setTimeout(tick, 1800); } }
+    el.textContent = words[w].slice(0, Math.max(c, 0)) || "\u200b";
+    setTimeout(tick, del ? 40 : 75);
+  })();
+})();
+
+/* ---------- Hero terminal ---------- */
+(() => {
+  const el = document.getElementById("term");
+  const lines = [
+    ["t-d", "rst:0x1 (POWERON_RESET), boot:0x13"],
+    ["t-i", "I (312) cam: OV2640 sensor ready"],
+    ["t-i", "I (604) power: VIN 12.1 V, 3V3 rail stable"],
+    ["t-i", "I (840) tflm: model loaded, 212 KB arena"],
+    ["t-i", "I (1502) vision: 4 weeds, 5 crops in 21 ms"],
+    ["t-i", "I (1610) lte: registered, RSSI -71 dBm"],
+    ["t-i", "I (1788) mqtt: published farm/row3"],
+    ["t-w", "W (1790) batt: 3.61 V, entering deep sleep 60 s"],
+    ["t-d", "..."],
+    ["t-i", "I (0) ros2: /rover_base node up, 4 wheels ok"],
+    ["t-i", "I (40) safety: e-stop loop 1 kHz armed"],
+    ["t-i", "I (95) vision: 30 fps, 18 ms latency"]
+  ];
+  let i = 0;
+  function add() {
+    if (i >= lines.length) { i = 0; el.innerHTML = ""; }
+    const s = document.createElement("span"); s.className = lines[i][0]; s.textContent = lines[i][1] + "\n";
+    el.appendChild(s); el.scrollTop = el.scrollHeight; i++;
+    if (el.children.length > 11) el.removeChild(el.firstChild);
+  }
+  if (reduce) { lines.slice(0, 8).forEach(add); return; }
+  add(); setInterval(add, 900);
+})();
+
+/* ---------- Stack tabs ---------- */
+const pads = [...document.querySelectorAll(".pad")], panels = [...document.querySelectorAll(".panel")], fill = document.getElementById("fill");
+const panelHooks = {};
+function setTab(i) {
+  pads.forEach((p, k) => { p.classList.toggle("on", k <= i); p.setAttribute("aria-selected", k === i); });
+  panels.forEach((p, k) => p.classList.toggle("on", k === i));
+  fill.style.width = (i * 20) + "%";
+  if (panelHooks[i]) panelHooks[i]();
+}
+pads.forEach((p, i) => p.addEventListener("click", () => setTab(i)));
+setTab(0);
+
+/* Schematic notes */
+(() => {
+  const notes = {
+    J1: "Screw terminal rated for field wiring. Chosen over a barrel jack because installers use bare wires and vibration loosens jacks.",
+    D1: "Schottky diode for reverse-polarity protection. Its low forward drop (about 0.3 V) wastes less power than a standard diode.",
+    C1: "Input bulk capacitor, placed close to the regulator to absorb voltage spikes from long cables when power is plugged in.",
+    U1: "Buck regulator instead of an LDO. Dropping 12 V to 3.3 V at 500 mA through an LDO would burn about 4.3 W as heat.",
+    C2: "Output capacitor sized for the ESP32's Wi-Fi and LTE current bursts, so the supply does not dip and reset the chip.",
+    R: "100k / 27k divider scales 12 V down to about 2.5 V for the ADC, while drawing only microamps from the battery."
+  };
+  const note = document.getElementById("schNote"), parts = document.querySelectorAll(".sch .part");
+  function pick(g) {
+    parts.forEach(x => x.classList.remove("sel")); g.classList.add("sel");
+    const k = g.dataset.k; note.innerHTML = `<b>${k === "R" ? "R1 / R2" : k}</b> ${notes[k]}`;
+  }
+  parts.forEach(g => {
+    g.addEventListener("click", () => pick(g));
+    g.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pick(g); } });
+  });
+  pick(document.querySelector('.sch .part[data-k="D1"]'));
+})();
+
+/* Segmented control helper */
+function seg(id, attr, cb) {
+  const root = document.getElementById(id), bs = [...root.querySelectorAll("button")];
+  bs.forEach(b => b.addEventListener("click", () => { bs.forEach(x => x.classList.toggle("on", x === b)); cb(b.dataset[attr], b); }));
+}
+function mulberry(a) { return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function fitCanvas(cv, H) { const dpr = Math.min(devicePixelRatio || 1, 2), W = cv.clientWidth; cv.width = W * dpr; cv.height = H * dpr; const c = cv.getContext("2d"); c.setTransform(dpr, 0, 0, dpr, 0, 0); return W; }
+
+/* ---------- PCB: photo loupe + layer view ---------- */
+(() => {
+  const svg = document.getElementById("pcbsvg"), q = document.getElementById("qfn");
+  let h = "";
+  for (let k = 0; k < 7; k++) h += `<rect x="232" y="${92 + k * 13}" width="12" height="6"/><rect x="296" y="${92 + k * 13}" width="12" height="6"/>`;
+  for (let k = 0; k < 3; k++) h += `<rect x="${254 + k * 13}" y="72" width="6" height="12"/><rect x="${254 + k * 13}" y="176" width="6" height="12"/>`;
+  h += `<rect x="252" y="100" width="36" height="60" rx="2" opacity=".55"/>`;
+  q.innerHTML = h;
+  document.querySelectorAll("#layerToggles input").forEach(cb => cb.addEventListener("change", () => svg.classList.toggle("no-" + cb.dataset.l, !cb.checked)));
+  const toggles = document.getElementById("layerToggles");
+  seg("pcbSeg", "v", v => {
+    document.querySelectorAll("[data-pv]").forEach(s => s.classList.toggle("on", s.dataset.pv === v));
+    toggles.hidden = v !== "layers";
+  });
+
+  const wrap = document.getElementById("loupeWrap"), img = document.getElementById("pcbPhoto"), lp = document.getElementById("loupe"), Z = 2.6;
+  const empty = () => { wrap.classList.add("empty"); img.style.display = "none"; document.getElementById("pcbCap").textContent = "Photo slot is empty"; };
+  img.addEventListener("error", empty);
+  if (img.complete && !img.naturalWidth) empty();
+  function move(e) {
+    if (wrap.classList.contains("empty")) return;
+    const wr = wrap.getBoundingClientRect(), ir = img.getBoundingClientRect();
+    const x = e.clientX - ir.left, y = e.clientY - ir.top;
+    if (x < 0 || y < 0 || x > ir.width || y > ir.height) { wrap.classList.remove("zoom"); return; }
+    wrap.classList.add("zoom");
+    const half = lp.offsetWidth / 2;
+    lp.style.left = (e.clientX - wr.left) + "px"; lp.style.top = (e.clientY - wr.top) + "px";
+    lp.style.backgroundImage = `url("${img.currentSrc || img.src}")`;
+    lp.style.backgroundSize = `${ir.width * Z}px ${ir.height * Z}px`;
+    lp.style.backgroundPosition = `${-(x * Z - half)}px ${-(y * Z - half)}px`;
+  }
+  wrap.addEventListener("pointermove", move);
+  wrap.addEventListener("pointerdown", e => { wrap.setPointerCapture(e.pointerId); move(e); });
+  ["pointerleave", "pointerup", "pointercancel"].forEach(ev => wrap.addEventListener(ev, () => wrap.classList.remove("zoom")));
+})();
+
+/* ---------- Firmware: selectable snippets ---------- */
+(() => {
+  const FW = {
+    esp32: { file: "main.c, ESP-IDF", code:
+`// On-device plant classifier, ESP32-S3 + camera
+#include "esp_camera.h"
+#include "esp_sleep.h"
+
+void app_main(void) {
+    ESP_ERROR_CHECK(esp_camera_init(&cam_cfg));
+    model_t *m = tflm_load(plant_model_tflite);
+
+    while (true) {
+        camera_fb_t *fb = esp_camera_fb_get();
+        result_t r = tflm_classify(m, fb->buf, fb->len);
+        esp_camera_fb_return(fb);
+
+        if (r.label == LABEL_WEED && r.conf > 0.85f) {
+            mqtt_publish("farm/row3/weed", &r, sizeof r);
+        }
+        esp_sleep_enable_timer_wakeup(30 * 1000000ULL);
+        esp_light_sleep_start();          // ~2 mA between frames
+    }
+}`,
+      flash: ["esptool.py v4.7  Connecting....", "Chip is ESP32-S3 (revision v0.2)", "Writing at 0x00010000... (100 %)", "Hash of data verified.", "Hard resetting via RTS pin..."],
+      out: [["t-i", "I (298) cam: OV2640 ready, 320x240"], ["t-i", "I (812) tflm: model loaded, 188 KB arena"], ["t-i", "I (1420) cls: weed (0.91) in 64 ms"], ["t-i", "I (1502) mqtt: published farm/row3/weed"], ["t-w", "W (1504) pm: light sleep 30 s"]] },
+
+    stm32: { file: "control.c, STM32 HAL", code:
+`// 1 kHz steering loop, STM32G474 + AS5600 encoder
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
+    if (htim->Instance != TIM6) return;
+
+    uint16_t raw = as5600_dma_angle();         // filled by I2C DMA
+    float angle  = raw * (360.0f / 4096.0f);
+    float duty   = pid_update(&steer_pid, target_deg, angle);
+
+    __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, (uint32_t)(duty * PWM_TOP));
+    HAL_IWDG_Refresh(&hiwdg);                  // a hang means a safe stop
+}
+
+int main(void) {
+    HAL_Init();
+    SystemClock_Config();                      // 170 MHz
+    MX_TIM1_Init(); MX_TIM6_Init(); MX_I2C1_Init(); MX_FDCAN1_Init(); MX_IWDG_Init();
+    HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
+    HAL_TIM_Base_Start_IT(&htim6);
+
+    while (1) {
+        can_process_rx();                      // commands with CRC-8 check
+    }
+}`,
+      flash: ["STM32CubeProgrammer v2.17", "ST-LINK/V3 connected, SWD 24 MHz", "Device: STM32G474xx, 512 KB flash", "Download in progress... 100 %", "File download complete, start operation OK"],
+      out: [["t-i", "[boot] clocks 170 MHz, reset cause: power-on"], ["t-i", "[can] FDCAN up, 1 Mbps"], ["t-i", "[enc] AS5600 ok, magnet in range"], ["t-i", "[ctrl] steering loop 1 kHz, IWDG armed"], ["t-w", "[ctrl] waiting for enable from host"]] },
+
+    rp2040: { file: "main.c, Pico SDK", code:
+`// Soil sensor node: sampling on core 1, LoRa uplink on core 0
+#include "pico/multicore.h"
+#include "hardware/adc.h"
+
+void core1_main(void) {
+    while (true) {
+        uint16_t moisture = adc_read();
+        multicore_fifo_push_blocking(moisture);
+        sleep_ms(1000);
+    }
+}
+
+int main(void) {
+    stdio_init_all();
+    adc_init(); adc_gpio_init(26); adc_select_input(0);
+    sx1262_init(spi0, LORA_SF9, 865062500UL);  // IN865 band
+    multicore_launch_core1(core1_main);
+
+    while (true) {
+        uint32_t v = multicore_fifo_pop_blocking();
+        uint8_t pkt[4] = { NODE_ID, 0x01, v >> 8, v & 0xFF };
+        sx1262_send(pkt, sizeof pkt);
+    }
+}`,
+      flash: ["picotool load -x soil_node.uf2", "Loading into Flash: [==============================] 100%", "The device was rebooted to start the application."],
+      out: [["t-i", "[core1] ADC ready on GP26"], ["t-i", "[lora] SX1262 SF9, 865.06 MHz, 14 dBm"], ["t-i", "[lora] tx node 07 moisture 412"], ["t-i", "[lora] tx done in 144 ms"], ["t-w", "[pm] dormant until next sample"]] },
+
+    rtos: { file: "tasks.c, FreeRTOS", code:
+`// Producer / consumer tasks with a queue and an alarm path
+static QueueHandle_t q;
+
+void sensor_task(void *arg) {
+    reading_t r;
+    for (;;) {
+        r.temp = ntc_read_c();
+        r.ts   = xTaskGetTickCount();
+        xQueueSend(q, &r, pdMS_TO_TICKS(10));
+        vTaskDelay(pdMS_TO_TICKS(100));
+    }
+}
+
+void uplink_task(void *arg) {
+    reading_t r;
+    for (;;) {
+        if (xQueueReceive(q, &r, portMAX_DELAY) == pdTRUE) {
+            if (r.temp > 32.0f) alarm_raise(ALARM_OVERTEMP);
+            telemetry_push(&r);
+        }
+    }
+}
+
+void app_start(void) {
+    q = xQueueCreate(32, sizeof(reading_t));
+    xTaskCreate(sensor_task, "sensor", 2048, NULL, 5, NULL);
+    xTaskCreate(uplink_task, "uplink", 4096, NULL, 4, NULL);
+    vTaskStartScheduler();
+}`,
+      flash: ["Building tasks.c ... done", "Flashing 214 KB ... 100 %", "Verify OK, resetting"],
+      out: [["t-i", "I (220) sched: 2 tasks started, heap free 181 KB"], ["t-i", "I (330) sensor: 24.1 C queued"], ["t-i", "I (1340) uplink: pushed 10 readings"], ["t-w", "W (5120) alarm: over temperature, 32.4 C"], ["t-i", "I (5121) uplink: alarm sent with priority"]] },
+
+    cpp: { file: "imu.hpp, C++17", code:
+`// Hardware-agnostic IMU driver: same code on any MCU bus
+template <typename Bus>
+class Imu {
+public:
+    explicit Imu(Bus& bus) : bus_(bus) {}
+
+    bool begin() {
+        return bus_.read(kWhoAmI) == 0x70;          // MPU-6500
+    }
+
+    Vec3 accel() const {
+        auto raw = bus_.template burst<6>(kAccelX);
+        return { scale(raw[0], raw[1]), scale(raw[2], raw[3]), scale(raw[4], raw[5]) };
+    }
+
+private:
+    static constexpr uint8_t kWhoAmI = 0x75, kAccelX = 0x3B;
+    static constexpr float scale(uint8_t hi, uint8_t lo) {
+        return int16_t(hi << 8 | lo) / 16384.0f;    // +/-2 g range
+    }
+    Bus& bus_;
+};`,
+      flash: ["cmake --build build -j8", "[100%] Built target imu_demo", "Flashing imu_demo.bin ... 100 %"],
+      out: [["t-i", "imu: MPU-6500 found (WHO_AM_I 0x70)"], ["t-i", "imu: accel x 0.01 y -0.02 z 1.00 g"], ["t-i", "imu: accel x 0.03 y -0.01 z 0.99 g"], ["t-i", "unit tests: 24 passed on host, same driver"]] }
+  };
+
+  const KW = "void|int|char|float|double|bool|unsigned|static|const|constexpr|volatile|struct|class|public|private|template|typename|explicit|auto|return|if|else|while|for|switch|case|break|true|false|nullptr|typedef|enum|sizeof";
+  const RE = new RegExp(`(\\/\\/.*$)|("(?:[^"\\\\]|\\\\.)*")|(^\\s*#\\w+)|\\b(0x[0-9A-Fa-f]+|\\d+(?:\\.\\d+)?(?:f|ULL|UL|U|L)?)\\b|\\b(${KW}|[A-Za-z]\\w*_t|[A-Z]\\w*TypeDef)\\b|\\b([A-Za-z_]\\w*)(?=\\s*\\()`, "g");
+  const esc = s => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  function hl(src) {
+    return src.split("\n").map((line, i) => {
+      let out = "", last = 0, m; RE.lastIndex = 0;
+      while ((m = RE.exec(line))) {
+        out += esc(line.slice(last, m.index));
+        const cls = m[1] ? "cm" : m[2] ? "str" : m[3] ? "kw" : m[4] ? "num" : m[5] ? "kw" : "fn";
+        out += `<span class="${cls}">${esc(m[0])}</span>`;
+        last = m.index + m[0].length;
+        if (m[0].length === 0) RE.lastIndex++;
+      }
+      return `<span class="ln">${i + 1}</span>` + out + esc(line.slice(last));
+    }).join("\n");
+  }
+
+  const code = document.getElementById("fwCode"), file = document.getElementById("fwFile"), btn = document.getElementById("flashBtn"), bar = document.getElementById("flashBar"), out = document.getElementById("serial");
+  let cur = "esp32", run = 0;
+  function show(k) {
+    cur = k; run++; code.innerHTML = hl(FW[k].code); code.scrollTop = 0; file.textContent = FW[k].file;
+    bar.style.width = "0"; btn.textContent = "Flash to board";
+    out.innerHTML = '<span class="t-d">Board connected. Press flash.</span>';
+  }
+  seg("fwSeg", "f", show); show("esp32");
+  const push = (cls, txt) => { const s = document.createElement("span"); s.className = cls; s.textContent = txt + "\n"; out.appendChild(s); out.scrollTop = out.scrollHeight; };
+  btn.addEventListener("click", () => {
+    const id = ++run, fw = FW[cur]; out.innerHTML = ""; bar.style.width = "0"; btn.textContent = "Flashing...";
+    let p = 0, i = 0;
+    const step = () => {
+      if (id !== run) return;
+      if (i < fw.flash.length) push("t-d", fw.flash[i]);
+      i++; p = Math.min(100, Math.round(i / fw.flash.length * 100)); bar.style.width = p + "%";
+      if (i < fw.flash.length) return setTimeout(step, reduce ? 0 : 380);
+      let j = 0;
+      const rest = () => { if (id !== run) return; if (j >= fw.out.length) { btn.textContent = "Flash again"; return; } push(...fw.out[j++]); setTimeout(rest, reduce ? 0 : 420); };
+      setTimeout(rest, reduce ? 0 : 500);
+    };
+    step();
+  });
+})();
+
+/* ---------- Models: four use cases ---------- */
+(() => {
+  const cv = document.getElementById("model"), ctx = cv.getContext("2d"), H = 250;
+  const th = document.getElementById("th"), thv = document.getElementById("thv"), rd = document.getElementById("reading"), dl = document.getElementById("dets");
+  const GOOD = "#7FD08E", BAD = "#FF8A6B", MUTE = "#95AE9F", CU = "#E0B35A";
+  let W = 0, mode = "weeds", scan = 0, raf = null;
+  const rng = (lo, hi) => lo + Math.random() * (hi - lo);
+  const S = {
+    weeds: { crops: [[.15, .3], [.5, .3], [.85, .3], [.32, .74], [.68, .74]], weeds: [[.33, .36], [.72, .24], [.08, .72], [.52, .56]], conf: [] },
+    faces: { xs: [.12, .31, .5, .69, .88], ids: ["ID 1042", "ID 1187", "unknown", "ID 1033", "ID 1261"], conf: [] },
+    defects: { kinds: ["ok", "underfill", "ok", "ok", "no cap", "ok"], conf: [] },
+    digits: { d: "04827".split(""), conf: [] }
+  };
+  function roll() {
+    S.weeds.conf = [...S.weeds.crops.map(() => rng(.82, .99)), ...S.weeds.weeds.map(() => rng(.62, .97))];
+    S.faces.conf = S.faces.ids.map(id => id === "unknown" ? rng(.3, .5) : rng(.7, .98));
+    S.defects.conf = S.defects.kinds.map(k => k === "ok" ? rng(.9, .99) : rng(.66, .95));
+    S.digits.conf = S.digits.d.map(() => rng(.6, .99));
+  }
+  roll();
+
+  function box(x, y, w, h, color, ok, label) {
+    ctx.save(); ctx.setLineDash(ok ? [] : [5, 4]); ctx.strokeStyle = ok ? color : MUTE; ctx.lineWidth = 2.2; ctx.strokeRect(x, y, w, h); ctx.setLineDash([]);
+    ctx.font = `600 11px "JetBrains Mono", monospace`; const tw = ctx.measureText(label).width + 10;
+    ctx.fillStyle = ok ? color : "rgba(149,174,159,.85)"; ctx.fillRect(x, y - 17, tw, 17);
+    ctx.fillStyle = "#08130E"; ctx.textAlign = "left"; ctx.textBaseline = "middle"; ctx.fillText(label, x + 5, y - 8); ctx.restore();
+  }
+
+  function drawWeeds(t, list) {
+    ctx.fillStyle = "#4A3526"; ctx.fillRect(0, 0, W, H);
+    const r = mulberry(7); for (let i = 0; i < 700; i++) { ctx.fillStyle = r() < .5 ? "#5B4332" : "#3A281C"; ctx.fillRect(r() * W, r() * H, 2 + r() * 2, 2); }
+    ctx.fillStyle = "rgba(0,0,0,.12)"; [.3, .74].forEach(y => ctx.fillRect(0, y * H - 14, W, 28));
+    const s = Math.min(W, H * 1.6) * .07, sd = S.weeds;
+    let crops = 0, weeds = 0;
+    sd.crops.forEach(([fx, fy], i) => {
+      const x = fx * W, y = fy * H, c = sd.conf[i];
+      for (let k = 0; k < 7; k++) { ctx.save(); ctx.translate(x, y); ctx.rotate(k / 7 * 6.283 + i); ctx.fillStyle = k % 2 ? "#4E9A45" : "#63B455"; ctx.beginPath(); ctx.ellipse(s * .55, 0, s * .6, s * .25, 0, 0, 7); ctx.fill(); ctx.restore(); }
+      ctx.fillStyle = "#3C7E36"; ctx.beginPath(); ctx.arc(x, y, s * .22, 0, 7); ctx.fill();
+      const ok = c >= t; if (ok) { crops++; ctx.fillStyle = "rgba(127,208,142,.18)"; ctx.beginPath(); ctx.arc(x, y, s * 1.1, 0, 7); ctx.fill(); }
+      box(x - s * 1.25, y - s * 1.25, s * 2.5, s * 2.5, GOOD, ok, `crop ${c.toFixed(2)}`); list.push([ok, `crop ${c.toFixed(2)}`, GOOD]);
+    });
+    sd.weeds.forEach(([fx, fy], i) => {
+      const x = fx * W, y = fy * H, c = sd.conf[sd.crops.length + i], rr = mulberry(20 + i);
+      ctx.strokeStyle = "#B2CF52"; ctx.lineWidth = 2; ctx.lineCap = "round";
+      for (let k = 0; k < 11; k++) { const a = -Math.PI / 2 + (rr() - .5) * 2.4, L = s * (.5 + rr() * .5); ctx.beginPath(); ctx.moveTo(x, y + s * .3); ctx.quadraticCurveTo(x + Math.cos(a) * L * .4, y + Math.sin(a) * L * .6, x + Math.cos(a) * L, y + s * .3 + Math.sin(a) * L); ctx.stroke(); }
+      const ok = c >= t; if (ok) { weeds++; ctx.fillStyle = "rgba(255,138,107,.22)"; ctx.beginPath(); ctx.arc(x, y, s * .75, 0, 7); ctx.fill(); ctx.fillStyle = BAD; ctx.beginPath(); ctx.arc(x, y, 3, 0, 7); ctx.fill(); }
+      box(x - s * .85, y - s * .85, s * 1.7, s * 1.7, BAD, ok, `weed ${c.toFixed(2)}`); list.push([ok, `weed ${c.toFixed(2)}`, BAD]);
+    });
+    rd.textContent = `${weeds} weeds targeted`;
+    return "YOLOv8s-seg on Pi 5 + Hailo-8";
+  }
+
+  function drawFaces(t, list) {
+    const g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, "#1A2E24"); g.addColorStop(1, "#0C1812"); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = "rgba(238,242,234,.05)"; ctx.fillRect(0, H * .66, W, 2);
+    const sd = S.faces, rr = Math.min(H * .1, W * .05); let present = 0;
+    const tones = ["#B08E74", "#8C6A55", "#C9A58B", "#A07B62", "#7A5A47"];
+    sd.xs.forEach((fx, i) => {
+      const x = fx * W, y = H * (.42 + (i % 2) * .05);
+      ctx.fillStyle = "#2C4A3C"; ctx.beginPath(); ctx.ellipse(x, H * 1.02, rr * 1.7, H * .4, 0, 0, 7); ctx.fill();
+      ctx.fillStyle = tones[i]; ctx.beginPath(); ctx.ellipse(x, y, rr * .82, rr, 0, 0, 7); ctx.fill();
+      ctx.fillStyle = "#1E1611"; ctx.beginPath(); ctx.ellipse(x, y - rr * .55, rr * .85, rr * .5, 0, Math.PI, 0); ctx.fill();
+      const c = sd.conf[i], unk = sd.ids[i] === "unknown", ok = !unk && c >= t;
+      if (ok) present++;
+      const lab = unk ? `unknown ${c.toFixed(2)}` : `${sd.ids[i]} ${c.toFixed(2)}`;
+      box(x - rr * 1.2, y - rr * 1.35, rr * 2.4, rr * 2.7, CU, ok, lab); list.push([ok, lab, CU]);
+    });
+    rd.textContent = `${present} marked present`;
+    return "Face detect + embedding match, on-device";
+  }
+
+  function drawDefects(t, list) {
+    ctx.fillStyle = "#0C1812"; ctx.fillRect(0, 0, W, H);
+    const top = H * .74; ctx.fillStyle = "#1F2B26"; ctx.fillRect(0, top, W, H * .16);
+    ctx.strokeStyle = "rgba(238,242,234,.08)"; for (let x = (performance.now() / 30) % 24 - 24; x < W; x += 24) { ctx.beginPath(); ctx.moveTo(x, top); ctx.lineTo(x + 10, top + H * .16); ctx.stroke(); }
+    ctx.fillStyle = "#2E3D36"; for (let x = 20; x < W; x += 60) { ctx.beginPath(); ctx.arc(x, top + H * .2, 8, 0, 7); ctx.fill(); }
+    const sd = S.defects, n = sd.kinds.length, gap = W / n, bw = Math.min(gap * .45, 46), bh = H * .45; let rej = 0;
+    sd.kinds.forEach((k, i) => {
+      const x = gap * (i + .5), y0 = top - bh;
+      ctx.fillStyle = "rgba(190,220,230,.18)"; ctx.strokeStyle = "rgba(200,230,240,.5)"; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.roundRect(x - bw / 2, y0 + bh * .28, bw, bh * .72, 8); ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.rect(x - bw * .18, y0 + bh * .06, bw * .36, bh * .24); ctx.fill(); ctx.stroke();
+      const lvl = k === "underfill" ? .55 : .2;
+      ctx.fillStyle = "#C98A2E"; ctx.beginPath(); ctx.roundRect(x - bw / 2 + 3, y0 + bh * (.28 + lvl), bw - 6, bh * (.72 - lvl) - 3, 6); ctx.fill();
+      if (k !== "no cap") { ctx.fillStyle = "#6C95C2"; ctx.fillRect(x - bw * .22, y0, bw * .44, bh * .08); }
+      const c = sd.conf[i], def = k !== "ok", ok = c >= t;
+      if (def && ok) rej++;
+      const col = def ? BAD : GOOD, lab = def ? (ok ? `${k} ${c.toFixed(2)}` : `review ${c.toFixed(2)}`) : `ok ${c.toFixed(2)}`;
+      box(x - bw / 2 - 6, y0 - 6, bw + 12, bh + 10, col, ok, lab); list.push([ok, lab, col]);
+    });
+    rd.textContent = `${rej} rejected`;
+    return "Line camera at 60 bottles/min, low confidence goes to human review";
+  }
+
+  function drawDigits(t, list) {
+    ctx.fillStyle = "#06110C"; ctx.fillRect(0, 0, W, H);
+    const mw = Math.min(W - 40, 420), mx = (W - mw) / 2, my = 55, mh = 130, sd = S.digits;
+    ctx.fillStyle = "#1A2A22"; ctx.beginPath(); ctx.roundRect(mx, my, mw, mh, 10); ctx.fill();
+    ctx.fillStyle = "#B9C7A0"; ctx.beginPath(); ctx.roundRect(mx + 14, my + 22, mw - 28, mh - 44, 6); ctx.fill();
+    const cw = (mw - 48) / sd.d.length, fs = Math.min(64, cw * 1.2); let str = "";
+    sd.d.forEach((d, i) => {
+      const cx = mx + 24 + cw * i + cw / 2, cy = my + mh / 2, c = sd.conf[i], ok = c >= t;
+      ctx.font = `600 ${fs}px "JetBrains Mono", monospace`; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillStyle = "#23301F"; ctx.fillText(d, cx, cy + 2);
+      str += ok ? d : "?";
+      box(cx - cw / 2 + 4, cy - fs / 2 - 4, cw - 8, fs + 8, CU, ok, c.toFixed(2)); list.push([ok, `${d} ${c.toFixed(2)}`, CU]);
+    });
+    rd.textContent = str;
+    return "Digit OCR on ESP32-S3, 18 ms per frame";
+  }
+
+  const DRAW = { weeds: drawWeeds, faces: drawFaces, defects: drawDefects, digits: drawDigits };
+  function draw() {
+    if (!W) W = fitCanvas(cv, H);
+    const t = +th.value, list = [];
+    const caption = DRAW[mode](t, list);
+    if (scan > 0) {
+      const sx = (1 - scan) * W, g = ctx.createLinearGradient(sx - 40, 0, sx, 0);
+      g.addColorStop(0, "rgba(255,233,174,0)"); g.addColorStop(1, "rgba(255,233,174,.45)"); ctx.fillStyle = g; ctx.fillRect(sx - 40, 0, 40, H);
+    }
+    ctx.fillStyle = "rgba(6,17,12,.75)"; ctx.fillRect(0, H - 24, W, 24);
+    ctx.fillStyle = MUTE; ctx.font = `11px "JetBrains Mono", monospace`; ctx.textAlign = "left"; ctx.textBaseline = "middle"; ctx.fillText(caption, 10, H - 12);
+    thv.textContent = t.toFixed(2);
+    dl.innerHTML = list.map(([ok, l, c]) => `<span style="color:${ok ? c : MUTE};opacity:${ok ? 1 : .6}">${l}${ok ? "" : " (below)"}</span>`).join("");
+  }
+  function run() {
+    cancelAnimationFrame(raf);
+    if (reduce) { roll(); draw(); return; }
+    scan = 1; let rolled = false;
+    (function a() { scan -= .028; if (scan < .5 && !rolled) { roll(); rolled = true; } if (scan <= 0) { scan = 0; draw(); return; } draw(); raf = requestAnimationFrame(a); })();
+  }
+  seg("mdSeg", "m", m => { mode = m; run(); });
+  th.addEventListener("input", draw);
+  document.getElementById("infer").addEventListener("click", run);
+  addEventListener("resize", () => { if (cv.offsetParent) { W = fitCanvas(cv, H); draw(); } });
+  panelHooks[3] = () => { W = fitCanvas(cv, H); draw(); };
+})();
+
+/* ---------- Field: ROS 2, telemetry, LoRa, smart lock ---------- */
+(() => {
+  const st = document.getElementById("fstatus");
+  let active = "ros";
+  const setStatus = (m, txt, bad) => { if (m !== active) return; st.textContent = txt; st.classList.toggle("bad", !!bad); };
+  const visible = el => !!el.offsetParent;
+
+  /* ROS 2 graph */
+  const ros = (() => {
+    const NS = "http://www.w3.org/2000/svg", svg = document.getElementById("ros");
+    const N = { cam: [20, 20, "/camera"], imu: [20, 108, "/imu"], es: [20, 196, "/estop_btn"], det: [190, 20, "/detector"], ekf: [190, 108, "/ekf"], saf: [190, 196, "/safety"], pln: [360, 64, "/planner"], mot: [505, 122, "/motor_driver"] };
+    const E = [
+      ["cam", "det", "M130,37 H190", "image_raw"], ["imu", "ekf", "M130,125 H190", "imu/data"], ["es", "saf", "M130,213 H190", "estop"],
+      ["det", "pln", "M300,37 C330,37 330,81 360,81", "detections"], ["ekf", "pln", "M300,125 C330,125 330,81 360,81", "odom"],
+      ["pln", "mot", "M470,81 C490,81 485,139 505,139", "cmd_vel"], ["saf", "mot", "M300,213 C420,213 450,150 505,146", "safety/ok"]
+    ];
+    const el = (tag, attrs, parent) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); parent.appendChild(e); return e; };
+    const gE = svg.querySelector("#edges"), gM = svg.querySelector("#msgs"), gN = svg.querySelector("#nodes"), nodeEl = {};
+    const edges = E.map(([a, b, d, topic]) => { const p = el("path", { d, class: "edge" }, gE); return { a, b, p, len: p.getTotalLength(), topic, dots: [] }; });
+    edges.forEach(e => { const m = e.p.getPointAtLength(e.len * .5); el("text", { x: m.x, y: m.y - 8, "text-anchor": "middle", class: "lbl" }, gM.parentNode).textContent = e.topic; });
+    for (const k in N) { const [x, y, lab] = N[k], g = el("g", { class: "node" }, gN); el("rect", { x, y, width: k === "mot" ? 125 : 110, height: 34, rx: 8 }, g); el("text", { x: x + 12, y: y + 21 }, g).textContent = lab; nodeEl[k] = g; }
+    const hz = document.getElementById("hz"), topics = [["image_raw", 30], ["detections", 30], ["odom", 50], ["cmd_vel", 20]];
+    let estop = false, raf = null, last = 0;
+    function drawHz() { hz.innerHTML = topics.map(([t, f]) => { const v = t === "cmd_vel" && estop ? 0 : f + Math.round((Math.random() - .5) * 2); return `<div><small>${t}</small><b>${v} Hz</b></div>`; }).join(""); }
+    function frame(now) {
+      if (!visible(svg)) { raf = null; return; }
+      edges.forEach(e => {
+        const blocked = estop && e.topic === "cmd_vel";
+        if (!blocked && Math.random() < .045) { const c = el("circle", { r: 4, class: "msg" }, gM); if (e.topic === "safety/ok" && estop) c.style.fill = "#FF8A6B"; e.dots.push({ c, t: 0 }); }
+        e.dots = e.dots.filter(d => { d.t += .012; if (d.t >= 1) { d.c.remove(); return false; } const pt = e.p.getPointAtLength(d.t * e.len); d.c.setAttribute("cx", pt.x); d.c.setAttribute("cy", pt.y); return true; });
+      });
+      if (now - last > 1000) { drawHz(); last = now; }
+      raf = requestAnimationFrame(frame);
+    }
+    const btn = document.getElementById("estop");
+    btn.addEventListener("click", () => {
+      estop = !estop; btn.textContent = estop ? "Release e-stop" : "Press e-stop";
+      ["saf", "mot", "es"].forEach(k => nodeEl[k].classList.toggle("bad", estop));
+      edges.forEach(e => { if (e.topic === "cmd_vel" && estop) { e.dots.forEach(d => d.c.remove()); e.dots = []; } });
+      drawHz(); setStatus("ros", estop ? "E-stop: motors de-energised" : "All nodes running", estop);
+    });
+    return {
+      start() { drawHz(); setStatus("ros", estop ? "E-stop: motors de-energised" : "All nodes running", estop); if (!raf) raf = requestAnimationFrame(frame); },
+      status() { setStatus("ros", estop ? "E-stop: motors de-energised" : "All nodes running", estop); }
+    };
+  })();
+
+  /* Telemetry */
+  const tele = (() => {
+    const cv = document.getElementById("field"), ctx = cv.getContext("2d"), H = 190;
+    const sT = document.getElementById("sTemp"), sR = document.getElementById("sRssi"), sU = document.getElementById("sUp");
+    let data = Array.from({ length: 120 }, (_, i) => 24 + Math.sin(i / 9) * 1.2), fault = 0, t = 0, iv = null, W = 0, up = 41 * 86400 + 6 * 3600 + 12 * 60, lastTxt = "Normal", lastBad = false;
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+      const lo = 18, hi = 40, y = v => H - 16 - (v - lo) / (hi - lo) * (H - 32);
+      ctx.strokeStyle = "rgba(238,242,234,.07)"; ctx.lineWidth = 1;
+      for (let v = 20; v <= 40; v += 5) { ctx.beginPath(); ctx.moveTo(0, y(v)); ctx.lineTo(W, y(v)); ctx.stroke(); }
+      ctx.setLineDash([6, 5]); ctx.strokeStyle = "rgba(255,138,107,.7)"; ctx.beginPath(); ctx.moveTo(0, y(32)); ctx.lineTo(W, y(32)); ctx.stroke(); ctx.setLineDash([]);
+      const step = W / (data.length - 1), g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, "rgba(224,179,90,.35)"); g.addColorStop(1, "rgba(224,179,90,0)");
+      ctx.beginPath(); data.forEach((v, i) => i ? ctx.lineTo(i * step, y(v)) : ctx.moveTo(0, y(v))); ctx.lineTo(W, H); ctx.lineTo(0, H); ctx.closePath(); ctx.fillStyle = g; ctx.fill();
+      ctx.beginPath(); data.forEach((v, i) => i ? ctx.lineTo(i * step, y(v)) : ctx.moveTo(0, y(v)));
+      const last = data[data.length - 1], bad = last > 32;
+      ctx.strokeStyle = bad ? "#FF8A6B" : "#E0B35A"; ctx.lineWidth = 2.2; ctx.stroke();
+      ctx.beginPath(); ctx.arc(W - 4, y(last), 5, 0, 7); ctx.fillStyle = bad ? "#FF8A6B" : "#FFE9AE"; ctx.fill();
+      ctx.fillStyle = "#95AE9F"; ctx.font = `11px "JetBrains Mono", monospace`; ctx.fillText("32 °C limit", 8, y(32) - 6);
+    }
+    function tick() {
+      t++; if (fault > 0) fault--;
+      const target = fault > 0 ? 36 : 24, prev = data[data.length - 1];
+      const v = prev + (target + Math.sin(t / 9) * 1.2 - prev) * (fault > 0 ? .12 : .08) + (Math.random() - .5) * .6;
+      data.push(v); data.shift();
+      const bad = v > 32; lastTxt = bad ? "Alert sent: motor over temperature" : (fault > 0 ? "Rising" : "Normal"); lastBad = bad;
+      setStatus("tele", lastTxt, bad);
+      sT.textContent = v.toFixed(1) + " °C";
+      if (t % 5 === 0) sR.textContent = (-68 - Math.floor(Math.random() * 7)) + " dBm";
+      if (t % 10 === 0) up++;
+      sU.textContent = `${Math.floor(up / 86400)}d ${String(Math.floor(up % 86400 / 3600)).padStart(2, "0")}:${String(Math.floor(up % 3600 / 60)).padStart(2, "0")}`;
+      draw();
+    }
+    document.getElementById("fault").addEventListener("click", () => { fault = 70; });
+    addEventListener("resize", () => { if (visible(cv)) { W = fitCanvas(cv, H); draw(); } });
+    return {
+      start() { W = fitCanvas(cv, H); draw(); setStatus("tele", lastTxt, lastBad); if (!iv) iv = setInterval(() => { if (!visible(cv)) { clearInterval(iv); iv = null; return; } tick(); }, reduce ? 500 : 110); },
+      status() { setStatus("tele", lastTxt, lastBad); }
+    };
+  })();
+
+  /* LoRa */
+  const lora = (() => {
+    const cv = document.getElementById("lora"), ctx = cv.getContext("2d"), H = 230, log = document.getElementById("loraLog"), info = document.getElementById("sfInfo");
+    const SF = { 7: { r: .45, air: "about 40 ms", speed: .045 }, 9: { r: .72, air: "about 160 ms", speed: .022 }, 12: { r: 1.05, air: "about 1.2 s", speed: .007 } };
+    const r0 = mulberry(3), kinds = [["soil", "%", 20, 45], ["tank", "cm", 40, 180], ["temp", "°C", 22, 36]];
+    const nodes = Array.from({ length: 10 }, (_, i) => ({ id: String(i + 1).padStart(2, "0"), a: i / 10 * 6.283 + r0() * .5, d: .25 + r0() * .75, k: kinds[i % 3] }));
+    let sf = 9, W = 0, raf = null, pk = [];
+    const pos = n => [W / 2 + Math.cos(n.a) * n.d * (W / 2 - 24), H / 2 + Math.sin(n.a) * n.d * (H / 2 - 18)];
+    const inRange = n => n.d <= SF[sf].r;
+    function line(txt, cls) { const s = document.createElement("span"); s.className = cls; s.textContent = txt + "\n"; log.appendChild(s); while (log.children.length > 40) log.removeChild(log.firstChild); log.scrollTop = log.scrollHeight; }
+    function updInfo() { const c = nodes.filter(inRange).length; info.textContent = `10-byte packet airtime ${SF[sf].air}, ${c} of 10 nodes in range`; setStatus("lora", `${c} nodes online`, c < 6); }
+    function draw() {
+      ctx.clearRect(0, 0, W, H); ctx.fillStyle = "#06110C"; ctx.fillRect(0, 0, W, H);
+      const R = SF[sf].r;
+      ctx.fillStyle = "rgba(224,179,90,.06)"; ctx.strokeStyle = "rgba(224,179,90,.35)"; ctx.setLineDash([6, 6]);
+      ctx.beginPath(); ctx.ellipse(W / 2, H / 2, R * (W / 2 - 24), R * (H / 2 - 18), 0, 0, 7); ctx.fill(); ctx.stroke(); ctx.setLineDash([]);
+      nodes.forEach(n => {
+        const [x, y] = pos(n), ok = inRange(n);
+        ctx.strokeStyle = ok ? "rgba(224,179,90,.18)" : "rgba(149,174,159,.08)"; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(W / 2, H / 2); ctx.stroke();
+        ctx.fillStyle = ok ? "#E0B35A" : "#3A4A42"; ctx.beginPath(); ctx.arc(x, y, 6, 0, 7); ctx.fill();
+        ctx.fillStyle = ok ? "#EEF2EA" : "#5F7B6C"; ctx.font = `10px "JetBrains Mono", monospace`; ctx.textAlign = "center"; ctx.fillText(n.id, x, y - 11);
+      });
+      pk.forEach(p => { const [x, y] = pos(p.n), px = x + (W / 2 - x) * p.t, py = y + (H / 2 - y) * p.t; ctx.fillStyle = "#FFE9AE"; ctx.shadowColor = "#FFE9AE"; ctx.shadowBlur = 10; ctx.beginPath(); ctx.arc(px, py, 3.5, 0, 7); ctx.fill(); ctx.shadowBlur = 0; });
+      ctx.fillStyle = "#16432F"; ctx.strokeStyle = "#E0B35A"; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(W / 2, H / 2, 14, 0, 7); ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(W / 2, H / 2 - 6); ctx.lineTo(W / 2, H / 2 - 26); ctx.stroke();
+      [8, 14].forEach(rr => { ctx.beginPath(); ctx.arc(W / 2, H / 2 - 26, rr, -2.4, -.74); ctx.stroke(); });
+      ctx.fillStyle = "#95AE9F"; ctx.font = `11px "JetBrains Mono", monospace`; ctx.fillText("gateway", W / 2, H / 2 + 28);
+    }
+    function frame() {
+      if (!visible(cv)) { raf = null; return; }
+      if (Math.random() < .03) { const c = nodes.filter(inRange); if (c.length) pk.push({ n: c[Math.floor(Math.random() * c.length)], t: 0 }); }
+      pk = pk.filter(p => {
+        p.t += SF[sf].speed;
+        if (p.t < 1) return true;
+        const n = p.n, [k, u, lo, hi] = n.k, rssi = Math.round(-72 - n.d * 58), snr = (9 - n.d * (sf === 12 ? 22 : 12)).toFixed(1);
+        line(`node ${n.id}  SF${sf}  RSSI ${rssi} dBm  SNR ${snr}  ${k} ${Math.round(lo + Math.random() * (hi - lo))}${u}`, "t-i");
+        return false;
+      });
+      draw(); raf = requestAnimationFrame(frame);
+    }
+    seg("sfSeg", "sf", v => { sf = +v; line(`gateway: nodes switched to SF${sf}`, "t-w"); updInfo(); draw(); });
+    addEventListener("resize", () => { if (visible(cv)) { W = fitCanvas(cv, H); draw(); } });
+    return {
+      start() { W = fitCanvas(cv, H); updInfo(); draw(); if (!log.children.length) line("gateway: IN865, 8 channels, listening", "t-d"); if (!raf && !reduce) raf = requestAnimationFrame(frame); },
+      status() { updInfo(); }
+    };
+  })();
+
+  /* Smart lock */
+  const lock = (() => {
+    const L = document.getElementById("lock"), log = document.getElementById("lockLog"), batt = document.getElementById("lkBatt");
+    let fails = 0, lockedOut = false, openT = null, b = 87, state = ["Locked", false];
+    const stamp = () => new Date().toTimeString().slice(0, 8);
+    function line(txt, cls) { const s = document.createElement("span"); s.className = cls; s.textContent = `${stamp()}  ${txt}\n`; log.appendChild(s); log.scrollTop = log.scrollHeight; }
+    const set = (txt, bad) => { state = [txt, bad]; setStatus("lock", txt, bad); };
+    document.getElementById("lkUnlock").addEventListener("click", () => {
+      if (lockedOut) { line("Rejected: keypad locked out, app unlock needs owner approval", "t-w"); return; }
+      clearTimeout(openT); L.classList.add("open"); L.classList.remove("alarm"); fails = 0;
+      if (Math.random() < .4 && b > 5) { b--; batt.textContent = b + "%"; }
+      line("Unlocked via BLE app, user: owner, signed token verified", "t-i"); set("Unlocked", false);
+      openT = setTimeout(() => { L.classList.remove("open"); line("Auto-locked after 4 s", "t-d"); set("Locked", false); }, 4000);
+    });
+    document.getElementById("lkPin").addEventListener("click", () => {
+      if (lockedOut) { line("Keypad disabled", "t-d"); return; }
+      fails++; line(`Wrong PIN (${fails} of 3)`, "t-w");
+      if (fails >= 3) {
+        lockedOut = true; L.classList.add("alarm"); line("Keypad locked for 15 s, owner notified over Wi-Fi", "t-w"); set("Locked out", true);
+        setTimeout(() => { lockedOut = false; fails = 0; L.classList.remove("alarm"); line("Keypad re-enabled", "t-d"); set("Locked", false); }, 15000);
+      }
+    });
+    document.getElementById("lkTamper").addEventListener("click", () => {
+      L.classList.add("alarm"); line("Tamper: vibration on housing, alert and photo sent to owner", "t-w"); set("Tamper alert", true);
+      setTimeout(() => { if (!lockedOut) { L.classList.remove("alarm"); set(L.classList.contains("open") ? "Unlocked" : "Locked", false); } }, 4000);
+    });
+    return { start() { if (!log.children.length) line("Lock online, firmware 2.3.1, secure boot on", "t-d"); setStatus("lock", ...state); }, status() { setStatus("lock", ...state); } };
+  })();
+
+  const M = { ros, tele, lora, lock };
+  seg("fdSeg", "d", d => {
+    active = d;
+    document.querySelectorAll("[data-fv]").forEach(s => s.classList.toggle("on", s.dataset.fv === d));
+    M[d].start();
+  });
+  panelHooks[4] = () => M[active].start();
+})();
+
+/* ---------- Estimator ---------- */
+(() => {
+  const S = {
+    review: { name: "Design review", lo: 30, hi: 60, w: [1, 1], unit: "" },
+    sprint: { name: "Feasibility sprint", lo: 150, hi: 300, w: [2, 3], unit: "" },
+    pilot:  { name: "Plant data pilot", lo: 300, hi: 800, w: [4, 8], unit: "" },
+    cto:    { name: "Fractional hardware CTO", lo: 40, hi: 100, w: [0, 0], unit: " / month" }
+  };
+  const A = { enc: [40, 1], batch: [60, 2], docs: [20, 0] };
+  let svc = "review", cx = 1, shown = [30, 60];
+  const price = document.getElementById("qPrice"), qs = document.getElementById("qSvc"), qt = document.getElementById("qTime"), qb = document.getElementById("qBtn");
+  const fmt = k => "₹" + (Math.round(k * 1000 / 5000) * 5000).toLocaleString("en-IN");
+  function calc() {
+    const s = S[svc], adds = [...document.querySelectorAll("#addons input")].filter(i => i.checked && svc !== "cto");
+    let lo = s.lo * cx, hi = s.hi * cx, w0 = s.w[0], w1 = s.w[1];
+    if (svc !== "review") { w0 = Math.round(w0 * cx); w1 = Math.round(w1 * cx); }
+    adds.forEach(i => { const [c, w] = A[i.dataset.a]; lo += c; hi += c; w0 += w; w1 += w; });
+    return { s, lo, hi, w0, w1, adds };
+  }
+  function tween(to) {
+    const from = shown.slice(), t0 = performance.now(), D = reduce ? 0 : 450;
+    (function f(now) {
+      const k = D ? Math.min(1, (now - t0) / D) : 1, e = 1 - Math.pow(1 - k, 3);
+      shown = [from[0] + (to[0] - from[0]) * e, from[1] + (to[1] - from[1]) * e];
+      price.textContent = `${fmt(shown[0])} to ${fmt(shown[1])}${S[svc].unit}`;
+      if (k < 1) requestAnimationFrame(f);
+    })(t0);
+  }
+  function update() {
+    const r = calc();
+    document.querySelectorAll("#addons label").forEach(l => l.classList.toggle("dis", svc === "cto"));
+    document.querySelectorAll("#addons input").forEach(i => i.disabled = svc === "cto");
+    qs.textContent = r.s.name;
+    qt.textContent = svc === "cto" ? "Ongoing, 4 to 6 hrs / month" : (r.w0 === r.w1 ? `About ${r.w0} week${r.w0 > 1 ? "s" : ""}` : `${r.w0} to ${r.w1} weeks`);
+    tween([r.lo, r.hi]);
+    const cxName = { 1: "Simple", 1.4: "Moderate", 1.9: "Complex" }[cx];
+    const body = `Hi Chetan,\n\nI used the estimator on your site.\n\nService: ${r.s.name}\nComplexity: ${cxName}\nAdd-ons: ${r.adds.map(i => i.parentElement.textContent.trim()).join(", ") || "None"}\nEstimate: ${fmt(r.lo)} to ${fmt(r.hi)}${r.s.unit}\n\nAbout my project:\n`;
+    qb.href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("Project enquiry: " + r.s.name)}&body=${encodeURIComponent(body)}`;
+  }
+  document.querySelectorAll(".svc").forEach(b => b.addEventListener("click", () => {
+    document.querySelectorAll(".svc").forEach(x => x.classList.remove("on")); b.classList.add("on"); svc = b.dataset.s; update();
+  }));
+  document.querySelectorAll("#cx button").forEach(b => b.addEventListener("click", () => {
+    document.querySelectorAll("#cx button").forEach(x => x.classList.remove("on")); b.classList.add("on"); cx = +b.dataset.c; update();
+  }));
+  document.querySelectorAll("#addons input").forEach(i => i.addEventListener("change", update));
+  update();
+})();
+
+/* ---------- Work filter ---------- */
+document.querySelectorAll("#filters button").forEach(b => b.addEventListener("click", () => {
+  document.querySelectorAll("#filters button").forEach(x => x.classList.remove("on")); b.classList.add("on");
+  const f = b.dataset.f;
+  document.querySelectorAll(".job").forEach(j => j.classList.toggle("hide", f !== "all" && !j.dataset.t.includes(f)));
+}));
+
+/* ---------- Process rail ---------- */
+(() => {
+  const ol = document.getElementById("steps"), fillEl = document.getElementById("railFill"), items = [...ol.querySelectorAll("li")];
+  function onScroll() {
+    const r = ol.getBoundingClientRect(), mid = innerHeight * 0.6;
+    const k = Math.max(0, Math.min(1, (mid - r.top) / r.height));
+    fillEl.style.height = (k * 100) + "%";
+    items.forEach(li => { const b = li.getBoundingClientRect(); li.classList.toggle("lit", b.top + 23 < mid); });
+  }
+  addEventListener("scroll", onScroll, { passive: true }); onScroll();
+})();
+
+/* ---------- Contact form (mailto) ---------- */
+document.getElementById("cform").addEventListener("submit", e => {
+  e.preventDefault();
+  const f = new FormData(e.target);
+  const body = `Name: ${f.get("name")}\nEmail: ${f.get("email")}\nBudget: ${f.get("budget")}\n\n${f.get("msg")}`;
+  location.href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("Project enquiry from " + f.get("name"))}&body=${encodeURIComponent(body)}`;
+});
+</script>
+</body>
+</html>
