@@ -1,2 +1,2 @@
-# chetaan_shinde.github.io
+# chetaan_shinde
 personal portfolio
