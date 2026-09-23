@@ -227,6 +227,55 @@ form textarea{min-height:120px;resize:vertical}
 footer{padding:2rem 0;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem}
 footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:1rem}
 
+.metrics{margin-top:2rem;display:grid;grid-template-columns:repeat(3,auto);gap:1.6rem;justify-content:start}
+.metrics b{display:block;font-size:1.9rem;font-stretch:118%;color:var(--copper);line-height:1.1}
+.metrics small{color:var(--muted);font-size:.85rem}
+.stage{position:relative;border-radius:22px;overflow:hidden;background:radial-gradient(75% 75% at 50% 35%,#15402E,#07140F 75%);border:1px solid var(--line2);box-shadow:0 40px 100px rgba(0,0,0,.5)}
+#gl{display:block;width:100%;height:clamp(380px,56vh,620px);touch-action:none;cursor:grab}
+#gl.drag{cursor:grabbing}
+.loading{position:absolute;inset:0;display:grid;place-items:center;color:var(--muted);font-family:var(--mono);font-size:.85rem;background:var(--bg);transition:opacity .6s;pointer-events:none}
+.loading.gone{opacity:0}
+.tools{position:absolute;left:12px;bottom:12px;right:12px;display:flex;gap:.45rem;flex-wrap:wrap;align-items:center}
+.tools button{border:1px solid var(--line2);background:rgba(7,20,15,.72);backdrop-filter:blur(8px);border-radius:999px;padding:.42rem .9rem;font-size:.82rem;cursor:pointer;color:var(--muted)}
+.tools button:hover{color:var(--ink);border-color:var(--copper)}
+.tools button.on{background:var(--copper);color:#1B1406;border-color:var(--copper);font-weight:650}
+.tip{position:absolute;top:12px;left:14px;font-size:.78rem;color:var(--muted);font-family:var(--mono);background:rgba(7,20,15,.6);padding:.3rem .6rem;border-radius:8px}
+.badge{position:absolute;top:12px;right:14px;font-size:.78rem;font-family:var(--mono);color:var(--copper);background:rgba(7,20,15,.6);padding:.3rem .6rem;border-radius:8px}
+
+/* Part card */
+.part{margin-top:1rem;display:grid;grid-template-columns:auto 1fr;gap:1rem;align-items:start;background:var(--board);border:1px solid var(--line2);border-radius:16px;padding:1.1rem 1.25rem;min-height:104px}
+.part .ref{font-family:var(--mono);font-size:.8rem;color:#1B1406;background:var(--copper);border-radius:8px;padding:.25rem .6rem;font-weight:600}
+.part h3{font-size:1.1rem;font-stretch:110%}
+.part p{color:var(--muted);font-size:.95rem;margin-top:.25rem}
+.part .spec{margin-top:.5rem;display:flex;gap:.4rem;flex-wrap:wrap}
+.part .spec span{font-family:var(--mono);font-size:.72rem;padding:.2rem .5rem;border-radius:6px;background:var(--board3);color:var(--ink)}
+
+/* Sections */
+.sec{padding:6rem 0;border-top:1px solid var(--line)}
+h2{font-size:clamp(1.9rem,3.8vw,3rem);font-weight:850;font-stretch:120%;line-height:1.05;letter-spacing:-.02em;max-width:22ch}
+.intro{margin-top:1rem;color:var(--muted);max-width:62ch}
+
+/* Console */
+.console{margin-top:2.5rem;display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;align-items:start}
+.pane{background:var(--board);border:1px solid var(--line2);border-radius:18px;overflow:hidden}
+.pane-bar{display:flex;align-items:center;gap:.5rem;padding:.7rem 1rem;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:.78rem;color:var(--muted);flex-wrap:wrap}
+.seg{display:inline-flex;gap:.2rem;background:#06110C;border:1px solid var(--line);border-radius:999px;padding:.2rem}
+.seg button{border:0;background:none;border-radius:999px;padding:.32rem .75rem;font-size:.8rem;color:var(--muted);cursor:pointer}
+.seg button.on{background:var(--copper);color:#1B1406;font-weight:650}
+.code{font-family:var(--mono);font-size:.78rem;line-height:1.75;padding:1rem;white-space:pre;overflow:auto;max-height:300px;background:#06110C}
+.ln{display:inline-block;width:2.1em;color:#3C5548;user-select:none}
+.kw{color:#E7A0D0}.fn{color:#8CC8FF}.str{color:#A8E08F}.num{color:var(--copper)}.cm{color:#5F7B6C}
+.runbar{display:flex;align-items:center;gap:.8rem;padding:.8rem 1rem;border-top:1px solid var(--line)}
+.bar{flex:1;height:7px;border-radius:4px;background:var(--board3);overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--copper);box-shadow:0 0 10px var(--copper);transition:width .12s}
+.out{font-family:var(--mono);font-size:.76rem;line-height:1.7;padding:.9rem 1rem;height:190px;overflow:auto;white-space:pre-wrap;background:#06110C;color:#CFE0D4}
+.t-i{color:#7FD08E}.t-w{color:var(--copper)}.t-d{color:var(--muted)}.t-e{color:var(--danger)}
+#scope{display:block;width:100%;height:120px;background:#06110C}
+.livebar{display:flex;gap:.5rem;padding:.7rem 1rem;flex-wrap:wrap;border-top:1px solid var(--line)}
+.pill{font-family:var(--mono);font-size:.73rem;padding:.25rem .6rem;border-radius:999px;background:var(--board3);color:var(--muted)}
+.pill b{color:var(--ink)}
+
+
 /* v3 additions */
 [hidden]{display:none!important}
 .ros .lbl{font-size:10px;paint-order:stroke;stroke:#0C2A1F;stroke-width:5px;stroke-linejoin:round}
@@ -270,6 +319,8 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:1rem}
 .lock .led{fill:#6FBF7F;transition:fill .3s}
 .lock.alarm .led{fill:var(--danger)}.lock.open .led{fill:var(--signal)}
 .btns{display:flex;flex-wrap:wrap;gap:.5rem}
+@media (max-width:980px){.hero .wrap,.console{grid-template-columns:1fr}#gl{height:min(62vh,430px)}}
+@media (max-width:560px){.badge{display:none}.tip{font-size:.68rem;max-width:70%}}
 @media (max-width:900px){
   .hz{grid-template-columns:repeat(2,1fr)}
   .lockwrap{grid-template-columns:100px 1fr}
@@ -301,7 +352,7 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:1rem}
   <div class="wrap">
     <a class="brand" href="#top"><i></i>Chetan [Surname]</a>
     <nav aria-label="Sections">
-      <a href="#stack">What I build</a>
+      <a href="#run">Run it</a><a href="#stack">What I build</a>
       <a href="#pricing">Pricing</a>
       <a href="#work">Work</a>
       <a href="#process">Process</a>
@@ -312,27 +363,76 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:1rem}
 </header>
 
 <main id="top">
-<!-- HERO -->
-<section class="hero">
-  <canvas id="pcb" aria-hidden="true"></canvas>
-  <div class="wrap">
+<!-- HERO: 3D BOARD -->
+  <section class="hero" id="board"><div class="wrap">
     <div>
       <h1>From the first resistor to the last line of code.</h1>
       <p class="rotator">Hardware + edge-AI for <b id="rot">smart meters</b></p>
       <div class="actions">
         <a class="btn primary" href="https://calendly.com/YOUR-LINK">Book a free 20-min call</a>
-        <a class="btn" href="#pricing">Estimate your project</a>
+        <a class="btn" href="#run">Run the firmware</a>
       </div>
-      <p class="hint" id="hint">Move over the board. Click to send a signal.</p>
+      <div class="metrics">
+        <div><b>8+</b><small>years</small></div>
+        <div><b>40+</b><small>boards designed</small></div>
+        <div><b>1</b><small>person, whole stack</small></div>
+      </div>
     </div>
-    <div class="term" aria-label="Sample device boot log">
-      <div class="term-bar"><span></span><span></span><span></span><em>Serial monitor, 115200 baud</em></div>
-      <pre id="term"></pre>
+    <div>
+      <div class="stage">
+        <canvas id="gl"></canvas>
+        <div class="loading" id="loading">building board…</div>
+        <div class="tip" id="tip">drag · zoom · tap a part</div>
+        <div class="badge" id="badge">2-layer · 100 × 70 mm</div>
+        <div class="tools">
+          <button id="bSpin" class="on">Auto-rotate</button>
+          <button id="bExp">Exploded</button>
+          <button id="bFlip">Flip</button>
+          <button id="bSig" class="on">Signals</button>
+          <button id="bReset">Reset view</button>
+        </div>
+      </div>
+      <div class="part" id="part">
+        <span class="ref" id="pRef">PCB</span>
+        <div>
+          <h3 id="pName">Sensor node, rev B</h3>
+          <p id="pDesc">A real two-layer design, drawn by hand. Tap any component to see what it is and why it was chosen. Drag to orbit, scroll to zoom.</p>
+          <div class="spec" id="pSpec"><span>2-layer FR4</span><span>1.6 mm</span><span>1 oz copper</span><span>100 × 70 mm</span></div>
+        </div>
+      </div>
     </div>
-  </div>
-</section>
+  </div></section>
 
-<!-- STACK EXPLORER -->
+  <!-- RUN FIRMWARE -->
+  <section class="sec" id="run"><div class="wrap">
+    <h2>Run firmware on that board</h2>
+    <p class="intro">Pick a program and press run. It executes against the board above: LEDs light up, the PWM waveform moves, sensor data streams and radio packets leave the antenna.</p>
+    <div class="console">
+      <div class="pane">
+        <div class="pane-bar">
+          <div class="seg" id="pgSeg">
+            <button class="on" data-f="blink">Blink</button><button data-f="pwm">PWM</button><button data-f="adc">Sensor</button><button data-f="radio">Radio</button><button data-f="safety">Safety</button>
+          </div>
+          <span id="pgFile" style="margin-left:auto">blink.c</span>
+        </div>
+        <div class="code" id="pgCode"></div>
+        <div class="runbar"><button class="btn primary small" id="runBtn">Run on board</button><div class="bar"><i id="runBar"></i></div><span class="pill" id="mcuPill">MCU <b>idle</b></span></div>
+      </div>
+      <div class="pane">
+        <div class="pane-bar"><span>Serial monitor · 115200</span><span style="margin-left:auto" id="clk">--:--:--</span></div>
+        <div class="out" id="out"><span class="t-d">Board connected. Pick a program and press run.</span></div>
+        <canvas id="scope"></canvas>
+        <div class="livebar">
+          <span class="pill">Rail <b id="mRail">3.30 V</b></span>
+          <span class="pill">Current <b id="mAmp">42 mA</b></span>
+          <span class="pill">Core <b id="mTemp">38 °C</b></span>
+          <span class="pill">Link <b id="mLink">idle</b></span>
+        </div>
+      </div>
+    </div>
+  </div></section>
+
+  <!-- STACK EXPLORER -->
 <section class="sec" id="stack">
   <div class="wrap">
     <h2>One engineer. The whole chain.</h2>
@@ -716,121 +816,18 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:1rem}
 
 <footer><div class="wrap"><span>© 2026 Chetan [Surname], Pune</span><span>Designed and built by hand, like the boards.</span></div></footer>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.128.0/three.min.js"></script>
 <script>
 const CONTACT_EMAIL = "you@yourdomain.com"; // EDIT
 const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 if (!CanvasRenderingContext2D.prototype.roundRect) CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h) { this.rect(x, y, w, h); };
 
-if (matchMedia("(pointer: coarse)").matches) document.getElementById("hint").textContent = "Tap the board to send a signal.";
+if (matchMedia("(pointer: coarse)").matches) { const t = document.getElementById("tip"); if (t) t.textContent = "drag the board · pinch to zoom · tap a part"; }
 
 /* Nav background on scroll */
 const nav = document.getElementById("nav");
 addEventListener("scroll", () => nav.classList.toggle("solid", scrollY > 40), { passive: true });
-
-/* ---------- Hero PCB canvas ---------- */
-(() => {
-  const cv = document.getElementById("pcb"), ctx = cv.getContext("2d");
-  const G = 26, dirs = [[1,0],[1,1],[0,1],[-1,1],[-1,0],[-1,-1],[0,-1],[1,-1]];
-  let W, H, traces = [], pulses = [], layer, mouse = { x: -999, y: -999 }, running = true;
-
-  function build() {
-    const dpr = Math.min(devicePixelRatio || 1, 2);
-    W = cv.clientWidth; H = cv.clientHeight;
-    cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    const cols = Math.ceil(W / G) + 1, rows = Math.ceil(H / G) + 1, occ = new Set();
-    traces = []; pulses = [];
-    const tries = Math.floor(cols * rows / 10);
-    for (let n = 0; n < tries; n++) {
-      let x = Math.floor(Math.random() * cols), y = Math.floor(Math.random() * rows);
-      if (occ.has(x + "," + y)) continue;
-      let d = [0, 2, 4, 6][Math.floor(Math.random() * 4)];
-      const pts = [[x, y]]; occ.add(x + "," + y);
-      const len = 4 + Math.floor(Math.random() * 20);
-      for (let s = 0; s < len; s++) {
-        if (Math.random() < 0.2) d = (d + (Math.random() < 0.5 ? 1 : 7)) % 8;
-        const nx = x + dirs[d][0], ny = y + dirs[d][1];
-        if (nx < 0 || ny < 0 || nx >= cols || ny >= rows || occ.has(nx + "," + ny)) break;
-        x = nx; y = ny; pts.push([x, y]); occ.add(x + "," + y);
-      }
-      if (pts.length < 4) continue;
-      const p = pts.map(([a, b]) => [a * G, b * G]);
-      const cum = [0];
-      for (let i = 1; i < p.length; i++) cum.push(cum[i - 1] + Math.hypot(p[i][0] - p[i - 1][0], p[i][1] - p[i - 1][1]));
-      let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
-      p.forEach(([a, b]) => { x0 = Math.min(x0, a); y0 = Math.min(y0, b); x1 = Math.max(x1, a); y1 = Math.max(y1, b); });
-      traces.push({ p, cum, len: cum[cum.length - 1], box: [x0, y0, x1, y1], w: Math.random() < 0.15 ? 3.2 : 1.6 });
-    }
-    layer = document.createElement("canvas");
-    layer.width = cv.width; layer.height = cv.height;
-    const l = layer.getContext("2d"); l.setTransform(dpr, 0, 0, dpr, 0, 0);
-    l.lineCap = "round"; l.lineJoin = "round";
-    traces.forEach(t => {
-      l.strokeStyle = "rgba(224,179,90,0.16)"; l.lineWidth = t.w;
-      l.beginPath(); t.p.forEach(([a, b], i) => i ? l.lineTo(a, b) : l.moveTo(a, b)); l.stroke();
-      [t.p[0], t.p[t.p.length - 1]].forEach(([a, b]) => {
-        l.beginPath(); l.arc(a, b, 4, 0, 7); l.fillStyle = "#07140F"; l.fill();
-        l.lineWidth = 2; l.strokeStyle = "rgba(224,179,90,0.35)"; l.stroke();
-      });
-    });
-    draw();
-  }
-  function at(t, d) {
-    let i = 1; while (i < t.cum.length - 1 && t.cum[i] < d) i++;
-    const a = t.p[i - 1], b = t.p[i], seg = t.cum[i] - t.cum[i - 1] || 1, f = Math.max(0, Math.min(1, (d - t.cum[i - 1]) / seg));
-    return [a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f];
-  }
-  function near(t, R) {
-    const [x0, y0, x1, y1] = t.box;
-    const dx = Math.max(x0 - mouse.x, 0, mouse.x - x1), dy = Math.max(y0 - mouse.y, 0, mouse.y - y1);
-    if (Math.hypot(dx, dy) > R) return 0;
-    let m = 1e9; t.p.forEach(([a, b]) => { m = Math.min(m, Math.hypot(a - mouse.x, b - mouse.y)); });
-    return m < R ? 1 - m / R : 0;
-  }
-  function spawn(t) { pulses.push({ t, d: 0, v: 2.2 + Math.random() * 2.5 }); }
-  function draw() {
-    ctx.clearRect(0, 0, W, H);
-    ctx.drawImage(layer, 0, 0, W, H);
-    ctx.lineCap = "round"; ctx.lineJoin = "round";
-    traces.forEach(t => {
-      const k = near(t, 150);
-      if (k > 0) {
-        ctx.strokeStyle = `rgba(224,179,90,${0.25 + k * 0.7})`; ctx.lineWidth = t.w + k;
-        ctx.shadowColor = "rgba(224,179,90,.8)"; ctx.shadowBlur = 10 * k;
-        ctx.beginPath(); t.p.forEach(([a, b], i) => i ? ctx.lineTo(a, b) : ctx.moveTo(a, b)); ctx.stroke();
-        ctx.shadowBlur = 0;
-      }
-    });
-    pulses.forEach(p => {
-      for (let j = 0; j < 7; j++) {
-        const d = p.d - j * 7; if (d < 0) break;
-        const [x, y] = at(p.t, d);
-        ctx.beginPath(); ctx.arc(x, y, 3 - j * 0.35, 0, 7);
-        ctx.fillStyle = `rgba(255,233,174,${1 - j / 7})`; ctx.shadowColor = "#FFE9AE"; ctx.shadowBlur = j ? 0 : 14; ctx.fill();
-      }
-      ctx.shadowBlur = 0;
-    });
-  }
-  function loop() {
-    if (!running) return;
-    pulses.forEach(p => p.d += p.v);
-    pulses = pulses.filter(p => p.d < p.t.len + 50);
-    if (traces.length && pulses.length < 45 && Math.random() < 0.12) spawn(traces[Math.floor(Math.random() * traces.length)]);
-    draw(); requestAnimationFrame(loop);
-  }
-  cv.addEventListener("pointermove", e => { const r = cv.getBoundingClientRect(); mouse = { x: e.clientX - r.left, y: e.clientY - r.top }; if (reduce) draw(); });
-  cv.addEventListener("pointerleave", () => { mouse = { x: -999, y: -999 }; if (reduce) draw(); });
-  cv.addEventListener("click", () => {
-    traces.map(t => [t, near(t, 220)]).filter(a => a[1] > 0).sort((a, b) => b[1] - a[1]).slice(0, 10).forEach(([t]) => spawn(t));
-    if (reduce) draw();
-  });
-  let rt; addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(build, 200); });
-  build();
-  if (!reduce) {
-    new IntersectionObserver(([e]) => { const was = running; running = e.isIntersecting; if (running && !was) loop(); }).observe(cv);
-    loop();
-  }
-})();
 
 /* ---------- Rotating word ---------- */
 (() => {
@@ -845,34 +842,6 @@ addEventListener("scroll", () => nav.classList.toggle("solid", scrollY > 40), { 
     el.textContent = words[w].slice(0, Math.max(c, 0)) || "\u200b";
     setTimeout(tick, del ? 40 : 75);
   })();
-})();
-
-/* ---------- Hero terminal ---------- */
-(() => {
-  const el = document.getElementById("term");
-  const lines = [
-    ["t-d", "rst:0x1 (POWERON_RESET), boot:0x13"],
-    ["t-i", "I (312) cam: OV2640 sensor ready"],
-    ["t-i", "I (604) power: VIN 12.1 V, 3V3 rail stable"],
-    ["t-i", "I (840) tflm: model loaded, 212 KB arena"],
-    ["t-i", "I (1502) vision: 4 weeds, 5 crops in 21 ms"],
-    ["t-i", "I (1610) lte: registered, RSSI -71 dBm"],
-    ["t-i", "I (1788) mqtt: published farm/row3"],
-    ["t-w", "W (1790) batt: 3.61 V, entering deep sleep 60 s"],
-    ["t-d", "..."],
-    ["t-i", "I (0) ros2: /rover_base node up, 4 wheels ok"],
-    ["t-i", "I (40) safety: e-stop loop 1 kHz armed"],
-    ["t-i", "I (95) vision: 30 fps, 18 ms latency"]
-  ];
-  let i = 0;
-  function add() {
-    if (i >= lines.length) { i = 0; el.innerHTML = ""; }
-    const s = document.createElement("span"); s.className = lines[i][0]; s.textContent = lines[i][1] + "\n";
-    el.appendChild(s); el.scrollTop = el.scrollHeight; i++;
-    if (el.children.length > 11) el.removeChild(el.firstChild);
-  }
-  if (reduce) { lines.slice(0, 8).forEach(add); return; }
-  add(); setInterval(add, 900);
 })();
 
 /* ---------- Stack tabs ---------- */
@@ -1529,6 +1498,14 @@ document.getElementById("cform").addEventListener("submit", e => {
   const body = `Name: ${f.get("name")}\nEmail: ${f.get("email")}\nBudget: ${f.get("budget")}\n\n${f.get("msg")}`;
   location.href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("Project enquiry from " + f.get("name"))}&body=${encodeURIComponent(body)}`;
 });
-</script>
-</body>
-</html>
+
+/* ============================ 3D BOARD ============================ */
+const BOARD = (() => {
+  const cv = document.getElementById("gl"), loading = document.getElementById("loading");
+  if (!window.THREE) { loading.textContent = "3D library blocked"; return null; }
+  let renderer;
+  try { renderer = new THREE.WebGLRenderer({ canvas: cv, antialias: true, alpha: true }); }
+  catch (e) { loading.textContent = "WebGL not available on this device"; return null; }
+
+  const scene = new THREE.Scene();
+  const camera = new THR
