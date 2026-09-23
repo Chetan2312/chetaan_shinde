@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- EDIT: replace [Surname], links and CONTACT_EMAIL -->
+<title>Chetan [Surname] | Interactive hardware profile</title>
+<meta name="description" content="Interactive profile: a 3D circuit board you can rotate, inspect and run firmware on. Embedded systems, PCB design, edge-AI and robotics.">
+<meta property="og:title" content="Chetan [Surname] | Interactive hardware profile">
+<meta property="og:description" content="Rotate the board. Tap a part. Run the firmware.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%230C2A1F'/><circle cx='16' cy='16' r='8' fill='none' stroke='%23E0B35A' stroke-width='4'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07140F;--board:#0C2A1F;--board2:#113628;--board3:#16432F;
+  --ink:#EEF2EA;--muted:#95AE9F;--copper:#E0B35A;--copper-dim:#5C4B27;--signal:#FFE9AE;--danger:#FF8A6B;--ok:#7FD08E;
+  --line:rgba(238,242,234,.1);--line2:rgba(238,242,234,.18);
+  --mono:"JetBrains Mono",ui-monospace,Consolas,monospace;--wrap:1240px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:"Archivo","Helvetica Neue",Arial,sans-serif;font-size:1.0625rem;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit}button,input{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--copper);outline-offset:3px;border-radius:6px}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 1.5rem}
+.nav{position:fixed;inset:0 0 auto 0;z-index:50;border-bottom:1px solid transparent;transition:background .3s,border-color .3s}
+.nav.solid{background:rgba(7,20,15,.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-color:var(--line)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;height:66px}
+.brand{display:flex;align-items:center;gap:.6rem;font-weight:800;font-stretch:115%;text-decoration:none}
+.brand i{width:13px;height:13px;border-radius:50%;border:3px solid var(--copper);box-shadow:0 0 12px rgba(224,179,90,.6)}
+.nav nav{display:flex;align-items:center;gap:1.6rem;font-size:.95rem}
+.nav nav a{color:var(--muted);text-decoration:none}.nav nav a:hover{color:var(--ink)}
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1.3rem;border-radius:999px;border:2px solid var(--copper);background:none;cursor:pointer;font-weight:650;text-decoration:none;transition:transform .15s,box-shadow .2s,background .2s}
+.btn:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(224,179,90,.25)}
+.btn.primary{background:var(--copper);color:#1B1406}
+.btn.small{padding:.45rem 1rem;font-size:.88rem;border-width:1px}
+.nav nav .btn{color:#1B1406}
+
+/* Hero + 3D stage */
+.hero{position:relative;padding:7rem 0 2rem}
+.hero .wrap{display:grid;grid-template-columns:.85fr 1.15fr;gap:2.5rem;align-items:center}
+h1{font-size:clamp(2.3rem,4.6vw,4rem);font-weight:850;font-stretch:125%;line-height:.98;letter-spacing:-.025em}
+.sub{margin-top:1.2rem;color:var(--muted);font-size:1.15rem;max-width:44ch}
+.metrics{margin-top:2rem;display:grid;grid-template-columns:repeat(3,auto);gap:1.5rem;justify-content:start}
+.metrics b{display:block;font-size:1.9rem;font-stretch:118%;color:var(--copper);line-height:1.1}
+.metrics small{color:var(--muted);font-size:.85rem}
+.cta{margin-top:2rem;display:flex;gap:.9rem;flex-wrap:wrap}
+
+.stage{position:relative;border-radius:22px;overflow:hidden;background:radial-gradient(75% 75% at 50% 35%,#15402E,#07140F 75%);border:1px solid var(--line2);box-shadow:0 40px 100px rgba(0,0,0,.5)}
+#gl{display:block;width:100%;height:clamp(380px,56vh,620px);touch-action:none;cursor:grab}
+#gl.drag{cursor:grabbing}
+.loading{position:absolute;inset:0;display:grid;place-items:center;color:var(--muted);font-family:var(--mono);font-size:.85rem;background:var(--bg);transition:opacity .6s;pointer-events:none}
+.loading.gone{opacity:0}
+.tools{position:absolute;left:12px;bottom:12px;right:12px;display:flex;gap:.45rem;flex-wrap:wrap;align-items:center}
+.tools button{border:1px solid var(--line2);background:rgba(7,20,15,.72);backdrop-filter:blur(8px);border-radius:999px;padding:.42rem .9rem;font-size:.82rem;cursor:pointer;color:var(--muted)}
+.tools button:hover{color:var(--ink);border-color:var(--copper)}
+.tools button.on{background:var(--copper);color:#1B1406;border-color:var(--copper);font-weight:650}
+.tip{position:absolute;top:12px;left:14px;font-size:.78rem;color:var(--muted);font-family:var(--mono);background:rgba(7,20,15,.6);padding:.3rem .6rem;border-radius:8px}
+.badge{position:absolute;top:12px;right:14px;font-size:.78rem;font-family:var(--mono);color:var(--copper);background:rgba(7,20,15,.6);padding:.3rem .6rem;border-radius:8px}
+
+/* Part card */
+.part{margin-top:1rem;display:grid;grid-template-columns:auto 1fr;gap:1rem;align-items:start;background:var(--board);border:1px solid var(--line2);border-radius:16px;padding:1.1rem 1.25rem;min-height:104px}
+.part .ref{font-family:var(--mono);font-size:.8rem;color:#1B1406;background:var(--copper);border-radius:8px;padding:.25rem .6rem;font-weight:600}
+.part h3{font-size:1.1rem;font-stretch:110%}
+.part p{color:var(--muted);font-size:.95rem;margin-top:.25rem}
+.part .spec{margin-top:.5rem;display:flex;gap:.4rem;flex-wrap:wrap}
+.part .spec span{font-family:var(--mono);font-size:.72rem;padding:.2rem .5rem;border-radius:6px;background:var(--board3);color:var(--ink)}
+
+/* Sections */
+.sec{padding:6rem 0;border-top:1px solid var(--line)}
+h2{font-size:clamp(1.9rem,3.8vw,3rem);font-weight:850;font-stretch:120%;line-height:1.05;letter-spacing:-.02em;max-width:22ch}
+.intro{margin-top:1rem;color:var(--muted);max-width:62ch}
+
+/* Console */
+.console{margin-top:2.5rem;display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;align-items:start}
+.pane{background:var(--board);border:1px solid var(--line2);border-radius:18px;overflow:hidden}
+.pane-bar{display:flex;align-items:center;gap:.5rem;padding:.7rem 1rem;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:.78rem;color:var(--muted);flex-wrap:wrap}
+.seg{display:inline-flex;gap:.2rem;background:#06110C;border:1px solid var(--line);border-radius:999px;padding:.2rem}
+.seg button{border:0;background:none;border-radius:999px;padding:.32rem .75rem;font-size:.8rem;color:var(--muted);cursor:pointer}
+.seg button.on{background:var(--copper);color:#1B1406;font-weight:650}
+.code{font-family:var(--mono);font-size:.78rem;line-height:1.75;padding:1rem;white-space:pre;overflow:auto;max-height:300px;background:#06110C}
+.ln{display:inline-block;width:2.1em;color:#3C5548;user-select:none}
+.kw{color:#E7A0D0}.fn{color:#8CC8FF}.str{color:#A8E08F}.num{color:var(--copper)}.cm{color:#5F7B6C}
+.runbar{display:flex;align-items:center;gap:.8rem;padding:.8rem 1rem;border-top:1px solid var(--line)}
+.bar{flex:1;height:7px;border-radius:4px;background:var(--board3);overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--copper);box-shadow:0 0 10px var(--copper);transition:width .12s}
+.out{font-family:var(--mono);font-size:.76rem;line-height:1.7;padding:.9rem 1rem;height:190px;overflow:auto;white-space:pre-wrap;background:#06110C;color:#CFE0D4}
+.t-i{color:#7FD08E}.t-w{color:var(--copper)}.t-d{color:var(--muted)}.t-e{color:var(--danger)}
+#scope{display:block;width:100%;height:120px;background:#06110C}
+.livebar{display:flex;gap:.5rem;padding:.7rem 1rem;flex-wrap:wrap;border-top:1px solid var(--line)}
+.pill{font-family:var(--mono);font-size:.73rem;padding:.25rem .6rem;border-radius:999px;background:var(--board3);color:var(--muted)}
+.pill b{color:var(--ink)}
+
+/* Skills / timeline */
+.grid{margin-top:2.5rem;display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem}
+.card{background:var(--board);border:1px solid var(--line);border-radius:18px;padding:1.5rem;position:relative;overflow:hidden;transition:border-color .2s,transform .2s}
+.card:hover{border-color:var(--copper);transform:translateY(-3px)}
+.card h3{font-size:1.15rem;font-stretch:112%}
+.card p{color:var(--muted);font-size:.95rem;margin-top:.5rem}
+.card .n{font-family:var(--mono);font-size:.75rem;color:var(--copper)}
+.tl{margin-top:2.5rem;position:relative;max-width:52rem;list-style:none}
+.tl::before{content:"";position:absolute;left:7px;top:8px;bottom:8px;width:3px;background:var(--copper-dim);border-radius:2px}
+.tl li{position:relative;padding:0 0 1.6rem 2.4rem}
+.tl li::before{content:"";position:absolute;left:0;top:7px;width:17px;height:17px;border-radius:50%;background:var(--bg);border:4px solid var(--copper);box-shadow:0 0 14px rgba(224,179,90,.45)}
+.tl h3{font-size:1.1rem;font-stretch:110%}
+.tl p{color:var(--muted);font-size:.95rem}
+.chips{margin-top:2rem;display:flex;flex-wrap:wrap;gap:.5rem}
+.chips span{padding:.45rem .9rem;border-radius:10px;background:var(--board);border:1px solid var(--line2);font-size:.9rem}
+.contact{background:radial-gradient(85% 120% at 100% 0%,var(--board2),var(--bg) 60%)}
+footer{padding:2rem 0;border-top:1px solid var(--line);color:var(--muted);font-size:.88rem}
+footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+
+@media (max-width:980px){
+  .hero .wrap,.console,.grid{grid-template-columns:1fr}
+  .nav nav a:not(.btn){display:none}
+  .hero{padding-top:5rem}
+  .sec{padding:4rem 0}
+  #gl{height:min(62vh,440px)}
+}
+@media (max-width:560px){.badge{display:none}.tip{font-size:.68rem;max-width:70%}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<header class="nav" id="nav"><div class="wrap">
+  <a class="brand" href="#top"><i></i>Chetan [Surname]</a>
+  <nav>
+    <a href="#board">The board</a><a href="#run">Run firmware</a><a href="#what">What I do</a>
+    <a class="btn primary small" href="#contact">Work with me</a>
+  </nav>
+</div></header>
+
+<main id="top">
+<section class="hero" id="board"><div class="wrap">
+  <div>
+    <h1>I build the board, the firmware and the model.</h1>
+    <p class="sub">Hardware engineer, 8+ years, self-taught. This is a real two-layer design you can rotate, take apart and run code on. Everything here was drawn by hand: schematic, layout, firmware.</p>
+    <div class="metrics">
+      <div><b>8+</b><small>years</small></div>
+      <div><b>40+</b><small>boards designed</small></div>
+      <div><b>1</b><small>person, whole stack</small></div>
+    </div>
+    <div class="cta">
+      <a class="btn primary" href="#contact">Book a call</a>
+      <a class="btn" href="#run">Run the firmware</a>
+    </div>
+  </div>
+
+  <div>
+    <div class="stage">
+      <canvas id="gl"></canvas>
+      <div class="loading" id="loading">building board…</div>
+      <div class="tip" id="tip">drag to rotate · scroll to zoom · tap a part</div>
+      <div class="badge" id="badge">2-layer · 100 × 70 mm</div>
+      <div class="tools">
+        <button id="bSpin" class="on">Auto-rotate</button>
+        <button id="bExp">Exploded</button>
+        <button id="bFlip">Flip</button>
+        <button id="bSig" class="on">Signals</button>
+        <button id="bReset">Reset view</button>
+      </div>
+    </div>
+    <div class="part" id="part">
+      <span class="ref" id="pRef">PCB</span>
+      <div>
+        <h3 id="pName">Sensor node, rev B</h3>
+        <p id="pDesc">Tap any component on the board to see what it is and why it was chosen. Drag to orbit, scroll to zoom.</p>
+        <div class="spec" id="pSpec"><span>2-layer FR4</span><span>1.6 mm</span><span>1 oz copper</span><span>100 × 70 mm</span></div>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<section class="sec" id="run"><div class="wrap">
+  <h2>Run firmware on it</h2>
+  <p class="intro">Pick a program, press run. The code executes against the board above: LEDs light up, the PWM waveform moves, sensor data streams and radio packets leave the antenna.</p>
+  <div class="console">
+    <div class="pane">
+      <div class="pane-bar">
+        <div class="seg" id="fwSeg">
+          <button class="on" data-f="blink">Blink</button><button data-f="pwm">PWM</button><button data-f="adc">Sensor</button><button data-f="radio">Radio</button><button data-f="safety">Safety</button>
+        </div>
+        <span id="fwFile" style="margin-left:auto">blink.c</span>
+      </div>
+      <div class="code" id="fwCode"></div>
+      <div class="runbar"><button class="btn primary small" id="runBtn">Run on board</button><div class="bar"><i id="runBar"></i></div><span class="pill" id="mcuPill">MCU <b>idle</b></span></div>
+    </div>
+    <div class="pane">
+      <div class="pane-bar"><span>Serial monitor · 115200</span><span style="margin-left:auto" id="clk">--:--:--</span></div>
+      <div class="out" id="out"><span class="t-d">Board connected. Pick a program and press run.</span></div>
+      <canvas id="scope"></canvas>
+      <div class="livebar">
+        <span class="pill">Rail <b id="mRail">3.30 V</b></span>
+        <span class="pill">Current <b id="mAmp">42 mA</b></span>
+        <span class="pill">Core <b id="mTemp">38 °C</b></span>
+        <span class="pill">Link <b id="mLink">idle</b></span>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<section class="sec" id="what"><div class="wrap">
+  <h2>The whole chain, one engineer</h2>
+  <p class="intro">Most products stall at the handoff between the hardware person, the firmware person and the AI person.</p>
+  <div class="grid">
+    <div class="card"><span class="n">01</span><h3>Schematic &amp; PCB</h3><p>Power design, protection, RF keep-outs, DFM for Indian and Chinese fabs. Boards that pass bring-up the first time.</p></div>
+    <div class="card"><span class="n">02</span><h3>Firmware</h3><p>ESP-IDF, STM32 HAL, Pico SDK, FreeRTOS. Watchdogs, OTA, deep sleep, CAN and safety interlocks.</p></div>
+    <div class="card"><span class="n">03</span><h3>Edge-AI &amp; vision</h3><p>YOLOv8 segmentation, TFLite-Micro, Hailo-8 and Jetson. Models sized to the cheapest hardware that meets the target.</p></div>
+    <div class="card"><span class="n">04</span><h3>Robotics</h3><p>ROS 2 stacks, swerve drive, absolute encoders, e-stop chains and safety validation before live operation.</p></div>
+    <div class="card"><span class="n">05</span><h3>Connectivity</h3><p>LoRa, BLE, Wi-Fi, LTE and MQTT. Devices that keep reporting from a field with no internet.</p></div>
+    <div class="card"><span class="n">06</span><h3>To production</h3><p>Enclosures, small batches, test jigs, documentation and handover your team can actually maintain.</p></div>
+  </div>
+
+  <ol class="tl">
+    <li><h3>Robotics platforms</h3><p>4WD swerve-steering field robot: STM32 motor control at 1 kHz, hardware e-stop with independent contactors, CRC-protected CAN, Raspberry Pi 5 + Hailo-8 perception.</p></li>
+    <li><h3>Edge vision products</h3><p>On-device detection and segmentation from ₹500 microcontrollers up to AI accelerators, including crop/weed discrimination and camera-based attendance.</p></li>
+    <li><h3>Industrial IoT</h3><p>Retrofit sensing on legacy equipment, cellular and LoRa backhaul, dashboards and alerting for plants that had only paper logbooks.</p></li>
+    <li><h3>Consumer &amp; education hardware</h3><p>Low-cost interactive devices with mesh wireless, sensor fusion and offline AI.</p></li>
+  </ol>
+
+  <div class="chips">
+    <span>C / C++17</span><span>Python</span><span>ESP-IDF</span><span>STM32 HAL</span><span>FreeRTOS</span><span>KiCad</span><span>ROS 2</span><span>PyTorch</span><span>TFLite-Micro</span><span>OpenCV</span><span>Hailo-8</span><span>Jetson</span><span>LoRa</span><span>BLE</span><span>CAN / FDCAN</span><span>Motor control</span><span>Power electronics</span>
+  </div>
+</div></section>
+
+<section class="sec contact" id="contact"><div class="wrap">
+  <h2>Tell me what you're building</h2>
+  <p class="intro">A 20-minute call is free. You'll leave with at least one useful idea, whether or not we work together.</p>
+  <div class="cta">
+    <!-- EDIT: your links -->
+    <a class="btn primary" href="https://calendly.com/YOUR-LINK">Book a free call</a>
+    <a class="btn" id="mailBtn" href="#">Email me</a>
+    <a class="btn" href="https://www.linkedin.com/in/YOUR-HANDLE">LinkedIn</a>
+    <a class="btn" href="https://github.com/YOUR-HANDLE">GitHub</a>
+  </div>
+</div></section>
+</main>
+
+<footer><div class="wrap"><span>© 2026 Chetan [Surname], Pune</span><span>Board, firmware and this page: built by hand.</span></div></footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.128.0/three.min.js"></script>
+<script>
+const CONTACT_EMAIL = "you@yourdomain.com"; // EDIT
+document.getElementById("mailBtn").href = "mailto:" + CONTACT_EMAIL;
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const nav = document.getElementById("nav");
+addEventListener("scroll", () => nav.classList.toggle("solid", scrollY > 30), { passive: true });
+
+/* ============================ 3D BOARD ============================ */
+const BOARD = (() => {
+  const cv = document.getElementById("gl"), loading = document.getElementById("loading");
+  if (!window.THREE) { loading.textContent = "3D library blocked"; return null; }
+  let renderer;
+  try { renderer = new THREE.WebGLRenderer({ canvas: cv, antialias: true, alpha: true }); }
+  catch (e) { loading.textContent = "WebGL not available on this device"; return null; }
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(36, 1, 1, 2000);
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+  if (THREE.sRGBEncoding) renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+  scene.add(new THREE.HemisphereLight(0xBFE8D4, 0x0A1A12, .32));
+  const key = new THREE.DirectionalLight(0xFFF3DA, 1.12);
+  key.position.set(70, 120, 60); key.castShadow = true;
+  key.shadow.mapSize.set(1024, 1024);
+  const sc = key.shadow.camera; sc.near = 20; sc.far = 340; sc.left = -95; sc.right = 95; sc.top = 95; sc.bottom = -95;
+  scene.add(key);
+  const rim = new THREE.DirectionalLight(0xE0B35A, .75); rim.position.set(-90, 50, -70); scene.add(rim);
+  scene.add(new THREE.AmbientLight(0x2C4E3D, .38));
+  const under = new THREE.DirectionalLight(0xA8DCC2, .5); under.position.set(20, -90, 30); scene.add(under);
+
+  const mat = {
+    fr4: new THREE.MeshStandardMaterial({ color: 0x06301C, roughness: .8, metalness: .05 }),
+    cu: new THREE.MeshStandardMaterial({ color: 0xEDBE68, roughness: .28, metalness: .95 }),
+    cuDim: new THREE.MeshStandardMaterial({ color: 0x9C7C3E, roughness: .5, metalness: .8, transparent: true, opacity: .75 }),
+    blk: new THREE.MeshStandardMaterial({ color: 0x14161A, roughness: .55, metalness: .18 }),
+    blk2: new THREE.MeshStandardMaterial({ color: 0x23262B, roughness: .7, metalness: .1 }),
+    silver: new THREE.MeshStandardMaterial({ color: 0xC9D2D6, roughness: .26, metalness: .95 }),
+    shield: new THREE.MeshStandardMaterial({ color: 0xB8C2C6, roughness: .34, metalness: 1 }),
+    blue: new THREE.MeshStandardMaterial({ color: 0x1C3E6B, roughness: .5, metalness: .25 }),
+    green: new THREE.MeshStandardMaterial({ color: 0x1D6B4A, roughness: .7 }),
+    beige: new THREE.MeshStandardMaterial({ color: 0xBFA98A, roughness: .8 }),
+    brown: new THREE.MeshStandardMaterial({ color: 0x5A3B24, roughness: .8 }),
+    modPcb: new THREE.MeshStandardMaterial({ color: 0x0B3323, roughness: .8 })
+  };
+
+  const root = new THREE.Group(); scene.add(root);
+  const board = new THREE.Group(); board.rotation.x = -Math.PI / 2; root.add(board);
+
+  /* ---- board substrate ---- */
+  const W = 100, H = 70, T = 1.6;
+  const shape = new THREE.Shape();
+  (function rr(s, w, h, r) {
+    const x = -w / 2, y = -h / 2;
+    s.moveTo(x + r, y); s.lineTo(x + w - r, y); s.absarc(x + w - r, y + r, r, -Math.PI / 2, 0);
+    s.lineTo(x + w, y + h - r); s.absarc(x + w - r, y + h - r, r, 0, Math.PI / 2);
+    s.lineTo(x + r, y + h); s.absarc(x + r, y + h - r, r, Math.PI / 2, Math.PI);
+    s.lineTo(x, y + r); s.absarc(x + r, y + r, r, Math.PI, Math.PI * 1.5);
+  })(shape, W, H, 4);
+  [[-44, -29], [44, -29], [-44, 29], [44, 29]].forEach(([x, y]) => {
+    const hole = new THREE.Path(); hole.absarc(x, y, 1.7, 0, Math.PI * 2, true); shape.holes.push(hole);
+  });
+  const sub = new THREE.Mesh(new THREE.ExtrudeGeometry(shape, { depth: T, bevelEnabled: false }), mat.fr4);
+  sub.geometry.translate(0, 0, -T);
+  sub.castShadow = true; sub.receiveShadow = true;
+  sub.userData = { ref: "PCB", name: "Sensor node, rev B", desc: "Two-layer board: 1 oz copper, 1.6 mm FR4, 100 x 70 mm. Power on the left, MCU in the middle, radio module isolated with its antenna over a keep-out.", spec: ["2-layer", "1.6 mm FR4", "1 oz Cu", "100 x 70 mm"] };
+  board.add(sub);
+
+  /* ---- copper ---- */
+  const route = (a, b) => { const dx = b[0] - a[0], dy = b[1] - a[1], s = Math.min(Math.abs(dx), Math.abs(dy)); return [a, [a[0] + Math.sign(dx) * s, a[1] + Math.sign(dy) * s], b]; };
+  function trace(pts, w, z, m) {
+    const g = new THREE.Group(), th = .09;
+    for (let i = 0; i < pts.length - 1; i++) {
+      const a = pts[i], b = pts[i + 1], dx = b[0] - a[0], dy = b[1] - a[1], L = Math.hypot(dx, dy);
+      if (L < .01) continue;
+      const seg = new THREE.Mesh(new THREE.BoxGeometry(L, w, th), m);
+      seg.position.set((a[0] + b[0]) / 2, (a[1] + b[1]) / 2, z); seg.rotation.z = Math.atan2(dy, dx); g.add(seg);
+    }
+    pts.forEach(p => { const j = new THREE.Mesh(new THREE.CylinderGeometry(w / 2, w / 2, th, 8), m); j.rotation.x = Math.PI / 2; j.position.set(p[0], p[1], z); g.add(j); });
+    return g;
+  }
+  const TOPZ = .06, BOTZ = -T - .06;
+  const nets = [
+    { p: [...route([-42, -26], [-24, -13]), [-24, -13]], w: 2.2 },            // 12V in to buck
+    { p: route([-16, -13], [-13, -12]), w: 2.2 },                              // buck sw to inductor
+    { p: [...route([-7, -12], [-4, -12])], w: 2.2 },                           // inductor to bulk cap
+    { p: [...route([-1, -12], [1, 2])], w: 1.6, sig: 1 },                      // 3v3 to mcu
+    { p: [...route([-1, -12], [-24, 6])], w: 1.6 },                            // 3v3 to module
+    { p: [...route([-23, 12], [-2, 11])], w: .8, sig: 1 },                     // module uart tx
+    { p: [...route([-23, 8], [-2, 9])], w: .8, sig: 1 },                       // module uart rx
+    { p: [...route([9, 10], [24, 18])], w: .8, sig: 1 },                       // mcu to driver
+    { p: [...route([9, 8], [24, 16])], w: .8 },
+    { p: [...route([9, 5], [12, 0])], w: .7, sig: 1 },                         // mcu to crystal
+    { p: [...route([9, 3], [19, -6])], w: .7, sig: 1 },                        // led 1
+    { p: [...route([9, 1], [24, -6])], w: .7 },
+    { p: [...route([9, 6], [41, 3])], w: .7, sig: 1 },                         // swd header
+    { p: [...route([9, 4], [41, 0])], w: .7 },
+    { p: [...route([9, 2], [41, -3])], w: .7 },
+    { p: [...route([0, -30], [1, -2])], w: 1.2, sig: 1 },                      // usb to mcu
+    { p: [...route([-38, 20], [-33, 17])], w: .7 },
+    { p: [...route([-38, 18], [-31, 16])], w: .7 },
+    { p: [...route([28, 22], [34, 26]), [44, 26]], w: 1.8 },
+    { p: [[-45, 32], [-30, 32], [-24, 26]], w: 1.2 }
+  ];
+  const sigPaths = [];
+  nets.forEach(n => {
+    board.add(trace(n.p, n.w, TOPZ, mat.cu));
+    if (n.sig) sigPaths.push(n.p);
+  });
+  [[[-40, -30], [-10, -30], [0, -22], [30, -22]], [[-44, 4], [-40, 0], [-40, -20]], [[20, -28], [44, -28], [46, -20]], [[-20, 30], [10, 30], [20, 24]]]
+    .forEach(p => board.add(trace(p, 2.4, BOTZ, mat.cuDim)));
+
+  /* pads + vias */
+  const padG = new THREE.Group(); board.add(padG);
+  function via(x, y) {
+    const r = new THREE.Mesh(new THREE.CylinderGeometry(.9, .9, T + .3, 10), mat.cu);
+    r.rotation.x = Math.PI / 2; r.position.set(x, y, -T / 2); padG.add(r);
+  }
+  [[-40, -20], [0, -22], [20, -22], [30, 30], [-24, 26], [44, -20], [-40, 0]].forEach(([x, y]) => via(x, y));
+
+  /* bottom copper pour + bottom silk */
+  const pour = new THREE.Mesh(new THREE.ExtrudeGeometry(shape, { depth: .07, bevelEnabled: false }), mat.cuDim);
+  pour.scale.set(.955, .955, 1); pour.position.z = -T - .09; board.add(pour);
+  const bc = document.createElement("canvas"); bc.width = 1000; bc.height = 700;
+  const gb = bc.getContext("2d");
+  gb.strokeStyle = "#F2F5EF"; gb.fillStyle = "#F2F5EF"; gb.lineWidth = 2.2; gb.textAlign = "center";
+  gb.font = "700 30px monospace"; gb.fillText("CHETAN  .  DESIGNED IN PUNE", 500, 300);
+  gb.font = "600 18px monospace"; gb.fillText("2-LAYER  1oz Cu  FR4 1.6mm   REV B", 500, 340);
+  gb.font = "600 16px monospace"; gb.fillText("GND POUR", 500, 470); gb.strokeRect(120, 120, 760, 460);
+  const bTex = new THREE.CanvasTexture(bc);
+  const bSilk = new THREE.Mesh(new THREE.PlaneGeometry(W, H), new THREE.MeshBasicMaterial({ map: bTex, transparent: true, opacity: .7, depthWrite: false, side: THREE.DoubleSide }));
+  bSilk.position.z = -T - .18; bSilk.scale.x = -1; board.add(bSilk);
+
+  /* ---- silkscreen layer (canvas texture) ---- */
+  const sc2 = document.createElement("canvas"); sc2.width = 1000; sc2.height = 700;
+  const g2 = sc2.getContext("2d");
+  const PX = (x, y) => [(x + 50) * 10, (35 - y) * 10];
+  g2.clearRect(0, 0, 1000, 700);
+  g2.strokeStyle = "#F2F5EF"; g2.fillStyle = "#F2F5EF"; g2.lineWidth = 2.4; g2.font = "600 17px monospace"; g2.textAlign = "center";
+  function silk(x, y, w, h, label, ly) {
+    const [px, py] = PX(x, y); g2.strokeRect(px - w * 5, py - h * 5, w * 10, h * 10);
+    if (label) g2.fillText(label, px, py + (ly || h * 5 + 18));
+  }
+  silk(4, 8, 13, 13, "U1", 95); silk(-32, 10, 20, 27, "MOD1", 155); silk(-20, -12, 5, 4, "U2", 35);
+  silk(-10, -12, 8, 8, "L1", 62); silk(-30, -12, 7.5, 7.5, "C1", 60); silk(-1, -12, 7.5, 7.5, "C2", 60);
+  silk(12, -2, 5, 3.5, "Y1", 34); silk(-42, -26, 14, 12, "J1", 92); silk(0, -32, 10, 6, "USB1", -48);
+  silk(44, 0, 3, 22, "J2", 125); silk(-44, 20, 13, 5, "J3", 45); silk(28, 18, 7, 7, "U3", 58);
+  silk(20, -6, 3, 2, "D1", 26); silk(25, -6, 3, 2, "D2", 26);
+  g2.setLineDash([8, 6]); g2.strokeRect(...PX(-44, 30), 240, 90); g2.setLineDash([]);
+  g2.font = "600 15px monospace"; g2.textAlign = "left";
+  g2.fillText("ANTENNA KEEP-OUT", ...PX(-42, 26));
+  g2.font = "700 22px monospace"; g2.fillText("CHETAN . SENSOR NODE", ...PX(6, -27));
+  g2.font = "600 15px monospace"; g2.fillText("REV B  2026", ...PX(6, -31));
+  const silkTex = new THREE.CanvasTexture(sc2);
+  const silkMesh = new THREE.Mesh(new THREE.PlaneGeometry(W, H), new THREE.MeshBasicMaterial({ map: silkTex, transparent: true, opacity: .85, depthWrite: false }));
+  silkMesh.position.z = .11; board.add(silkMesh);
+
+  /* ---- components ---- */
+  const comps = [], compGroup = new THREE.Group(); board.add(compGroup);
+  function addComp(mesh, x, y, info, lift) {
+    mesh.position.x = x; mesh.position.y = y;
+    mesh.traverse(o => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+    mesh.userData = Object.assign({ baseZ: mesh.position.z, lift: lift || 16 }, info);
+    compGroup.add(mesh); comps.push(mesh); return mesh;
+  }
+  const box = (w, h, d, m) => new THREE.Mesh(new THREE.BoxGeometry(w, h, d), m);
+
+  /* MCU, QFN-48 */
+  (() => {
+    const g = new THREE.Group(); const b = box(10, 10, 1.1, mat.blk); b.position.z = .55; g.add(b);
+    for (let i = 0; i < 12; i++) { const o = -4.6 + i * .84; [[o, 5.1, 0], [o, -5.1, 0], [5.1, o, 1], [-5.1, o, 1]].forEach(([px, py], k) => { const p = box(k > 1 ? .9 : .45, k > 1 ? .45 : .9, .25, mat.cu); p.position.set(px, py, .16); g.add(p); }); }
+    const dot = new THREE.Mesh(new THREE.CylinderGeometry(.5, .5, .1, 10), mat.silver); dot.rotation.x = Math.PI / 2; dot.position.set(-3.4, 3.4, 1.12); g.add(dot);
+    addComp(g, 4, 8, { ref: "U1", name: "STM32G474 (QFN-48)", desc: "Motor-control class MCU at 170 MHz with FDCAN, hardware CORDIC and fast 12-bit ADCs. It runs the 1 kHz control loop and the safety watchdog.", spec: ["170 MHz", "FDCAN", "12-bit ADC", "IWDG"] }, 22);
+  })();
+
+  /* ESP32 module */
+  (() => {
+    const g = new THREE.Group();
+    const p = box(20, 27, 1, mat.modPcb); p.position.z = .5; g.add(p);
+    const sh = box(17, 17.5, 2.2, mat.shield); sh.position.set(0, -3, 2.1); g.add(sh);
+    for (let i = 0; i < 7; i++) { const t = box(i % 2 ? 9 : 6, .9, .12, mat.cu); t.position.set(i % 2 ? 0 : 1.5, 7 + i * 1.1, 1.06); g.add(t); }
+    for (let i = 0; i < 9; i++) { [-10, 10].forEach(sx => { const pad = box(1.6, 1, .2, mat.cu); pad.position.set(sx, -12 + i * 2.6, .5); g.add(pad); }); }
+    addComp(g, -32, 10, { ref: "MOD1", name: "ESP32-S3 radio + AI module", desc: "Wi-Fi, BLE and camera interface, running the TFLite-Micro model on-device. Shielded, with the PCB antenna hanging over a copper keep-out so range doesn't collapse.", spec: ["Wi-Fi + BLE", "TFLite-Micro", "Shielded", "Keep-out"] }, 26);
+  })();
+
+  /* buck regulator */
+  (() => { const g = new THREE.Group(); const b = box(3.2, 3, 1.1, mat.blk); b.position.z = .55; g.add(b);
+    for (let i = 0; i < 3; i++) [[-2.1, 1], [2.1, 1]].forEach(([sx]) => { const p = box(1.2, .6, .2, mat.cu); p.position.set(sx, -1 + i, .12); g.add(p); });
+    addComp(g, -20, -12, { ref: "U2", name: "Synchronous buck regulator", desc: "12 V to 3.3 V at 1 A. An LDO here would burn about 4 W as heat; the buck stays cool and keeps the enclosure sealed.", spec: ["12 V to 3.3 V", "1 A", "~92% eff"] }, 14); })();
+
+  /* inductor */
+  (() => { const g = new THREE.Group(); const b = box(7, 7, 4, mat.blk2); b.position.z = 2; g.add(b);
+    const c = new THREE.Mesh(new THREE.CylinderGeometry(2.4, 2.4, .5, 16), mat.blk); c.rotation.x = Math.PI / 2; c.position.z = 4.1; g.add(c);
+    addComp(g, -10, -12, { ref: "L1", name: "Shielded power inductor", desc: "10 uH, placed tight against the switch node so the high-current loop stays small. Big loops here radiate straight into the radio.", spec: ["10 uH", "3 A", "Shielded"] }, 18); })();
+
+  /* electrolytics */
+  [[-30, -12, "C1", "Input bulk capacitor", "Soaks up the spike when 12 V is hot-plugged through a long field cable, before it reaches the regulator."], [-1, -12, "C2", "Output bulk capacitor", "Holds the 3.3 V rail steady through Wi-Fi transmit bursts, which would otherwise dip the rail and reset the MCU."]]
+    .forEach(([x, y, ref, name, desc]) => {
+      const g = new THREE.Group();
+      const c = new THREE.Mesh(new THREE.CylinderGeometry(3.2, 3.2, 8, 20), mat.blue); c.rotation.x = Math.PI / 2; c.position.z = 4; g.add(c);
+      const t = new THREE.Mesh(new THREE.CylinderGeometry(3.1, 3.1, .4, 20), mat.blk2); t.rotation.x = Math.PI / 2; t.position.z = 8.1; g.add(t);
+      const s = box(1.6, 6.4, .05, new THREE.MeshStandardMaterial({ color: 0xE8EDE6, roughness: .9 })); s.position.set(-3.2, 0, 4); s.rotation.y = Math.PI / 2; g.add(s);
+      addComp(g, x, y, { ref, name, desc, spec: ["470 uF", "25 V", "Low ESR"] }, 20);
+    });
+
+  /* crystal */
+  (() => { const g = new THREE.Group(); const b = box(5, 3.2, 1, mat.silver); b.position.z = .5; g.add(b);
+    addComp(g, 12, -2, { ref: "Y1", name: "8 MHz crystal", desc: "Short traces and a ground guard ring around it. Sloppy clock routing shows up later as CAN errors and timing jitter.", spec: ["8 MHz", "10 ppm", "Guard ring"] }, 12); })();
+
+  /* USB-C */
+  (() => { const g = new THREE.Group(); const b = box(9, 7.2, 3.2, mat.silver); b.position.z = 1.6; g.add(b);
+    const slot = box(7, .8, 1.4, mat.blk); slot.position.set(0, -3.4, 1.6); g.add(slot);
+    addComp(g, 0, -32, { ref: "USB1", name: "USB-C, power and console", desc: "Power input plus a serial console for field debugging, with ESD protection on the data pair and a fuse on VBUS.", spec: ["USB-C", "ESD", "CDC console"] }, 14); })();
+
+  /* screw terminal */
+  (() => { const g = new THREE.Group(); const b = box(14, 12, 10, mat.green); b.position.z = 5; g.add(b);
+    [-3.5, 3.5].forEach(x => { const s = new THREE.Mesh(new THREE.CylinderGeometry(2, 2, .8, 12), mat.silver); s.rotation.x = Math.PI / 2; s.position.set(x, 1, 10.1); g.add(s); });
+    addComp(g, -42, -26, { ref: "J1", name: "Field power terminal", desc: "Screw terminal, not a barrel jack: installers arrive with bare wire and vibration walks a jack loose. Reverse-polarity protection sits right behind it.", spec: ["9 to 30 V", "Screw", "Reverse protect"] }, 20); })();
+
+  /* header */
+  (() => { const g = new THREE.Group(); const b = box(2.8, 21, 2.6, mat.blk); b.position.z = 1.3; g.add(b);
+    for (let i = 0; i < 8; i++) { const p = box(.64, .64, 7, mat.cu); p.position.set(0, -9 + i * 2.54, 3.5); g.add(p); }
+    addComp(g, 44, 0, { ref: "J2", name: "SWD + UART header", desc: "Debug and expansion on one 2.54 mm header, so the board can be reflashed and traced without opening the enclosure.", spec: ["SWD", "UART", "2.54 mm"] }, 16); })();
+
+  /* FFC camera connector */
+  (() => { const g = new THREE.Group(); const b = box(13, 5, 2, mat.brown); b.position.z = 1; g.add(b);
+    const f = box(13, 1.4, 1.2, mat.blk2); f.position.set(0, 1.8, 1.6); g.add(f);
+    addComp(g, -44, 20, { ref: "J3", name: "Camera FFC connector", desc: "24-pin flat-flex for the camera module, routed as matched-length pairs away from the switching regulator.", spec: ["24-pin", "0.5 mm", "Matched length"] }, 14); })();
+
+  /* motor driver */
+  (() => { const g = new THREE.Group(); const b = box(7, 7, 1.1, mat.blk); b.position.z = .55; g.add(b);
+    const pad = box(4, 4, .2, mat.cu); pad.position.z = .1; g.add(pad);
+    for (let i = 0; i < 8; i++) { const o = -3 + i * .86; [[o, 3.6, 0], [o, -3.6, 0]].forEach(([px, py]) => { const p = box(.45, .9, .22, mat.cu); p.position.set(px, py, .14); g.add(p); }); }
+    addComp(g, 28, 18, { ref: "U3", name: "Gate driver / half bridge", desc: "Drives the external power stage with dead-time and desat protection, sitting on its own thermal pad and copper pour.", spec: ["Dead-time", "Desat", "Thermal pad"] }, 18); })();
+
+  /* LEDs */
+  const leds = [];
+  [[20, -6, 0x7FD08E, "D1", "Heartbeat LED", "Green heartbeat: if it stops blinking, the main loop stalled and the watchdog is about to reset the board."],
+   [25, -6, 0xFF8A6B, "D2", "Fault LED", "Red fault indicator, driven straight from the safety logic so it lights even if firmware is wedged."]]
+    .forEach(([x, y, col, ref, name, desc]) => {
+      const g = new THREE.Group();
+      const m = new THREE.MeshStandardMaterial({ color: col, emissive: col, emissiveIntensity: .12, roughness: .35 });
+      const b = new THREE.Mesh(new THREE.BoxGeometry(2.4, 1.5, .9), m); b.position.z = .45; g.add(b);
+      const light = new THREE.PointLight(col, 0, 26); light.position.set(0, 0, 3); g.add(light);
+      addComp(g, x, y, { ref, name, desc, spec: ["0805", "2 mA", col === 0x7FD08E ? "Heartbeat" : "Fault"] }, 12);
+      leds.push({ m, light });
+    });
+
+  /* passives */
+  const pass = [[14, 16], [18, 16], [22, 16], [-8, 4], [-8, 0], [-8, -4], [14, 4], [18, 4], [30, 6], [34, 6], [-16, 20], [-16, 24], [8, -18], [14, -18], [20, -18], [34, -14], [38, 12], [38, 16]];
+  pass.forEach(([x, y], i) => {
+    const g = new THREE.Group();
+    const b = box(2, 1.25, .6, i % 3 ? mat.blk2 : mat.beige); b.position.z = .3; g.add(b);
+    [-.9, .9].forEach(sx => { const e = box(.45, 1.25, .62, mat.silver); e.position.set(sx, 0, .31); g.add(e); });
+    g.rotation.z = i % 2 ? Math.PI / 2 : 0;
+    addComp(g, x, y, { ref: i % 3 ? "R" + (i + 1) : "C" + (i + 10), name: i % 3 ? "0805 resistor" : "0805 capacitor", desc: i % 3 ? "Pull-ups, dividers and current limits. Values picked for real tolerance stack-up, not for the nominal case." : "Decoupling placed within a couple of millimetres of each supply pin, on the same side as the chip.", spec: ["0805", i % 3 ? "1%" : "X7R", "Hand-solderable"] }, 8);
+  });
+
+  /* radio rings */
+  const rings = [];
+  for (let i = 0; i < 3; i++) {
+    const r = new THREE.Mesh(new THREE.TorusGeometry(4, .35, 8, 40), new THREE.MeshBasicMaterial({ color: 0xFFE9AE, transparent: true, opacity: 0 }));
+    r.position.set(-32, 24, 3); r.userData.t = i / 3; board.add(r); rings.push(r);
+  }
+
+  /* signal pulses */
+  const pulseGeo = new THREE.SphereGeometry(.85, 10, 8);
+  const pulseMat = new THREE.MeshBasicMaterial({ color: 0xFFF0C4 });
+  const paths = sigPaths.map(p => {
+    const cum = [0]; let L = 0;
+    for (let i = 1; i < p.length; i++) { L += Math.hypot(p[i][0] - p[i - 1][0], p[i][1] - p[i - 1][1]); cum.push(L); }
+    return { p, cum, L };
+  });
+  const pulses = [];
+  function spawn() {
+    if (!paths.length) return;
+    const pa = paths[Math.floor(Math.random() * paths.length)];
+    const m = new THREE.Mesh(pulseGeo, pulseMat); m.position.z = TOPZ + .3; board.add(m);
+    pulses.push({ m, pa, d: 0, v: .5 + Math.random() * .9 });
+  }
+  function ptAt(pa, d) {
+    let i = 1; while (i < pa.cum.length - 1 && pa.cum[i] < d) i++;
+    const a = pa.p[i - 1], b = pa.p[i], seg = pa.cum[i] - pa.cum[i - 1] || 1, f = Math.min(1, Math.max(0, (d - pa.cum[i - 1]) / seg));
+    return [a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f];
+  }
+
+  /* ---- camera orbit ---- */
+  let theta = -0.55, phi = 0.78, rad = 175, tTheta = theta, tPhi = phi, tRad = rad;
+  let spin = !reduce, exploded = false, flipped = false, signals = true;
+  function place() {
+    camera.position.set(rad * Math.sin(phi) * Math.sin(theta), rad * Math.cos(phi), rad * Math.sin(phi) * Math.cos(theta));
+    camera.lookAt(0, 0, 0);
+  }
+  function resize() {
+    const w = cv.clientWidth, h = cv.clientHeight;
+    renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
+    tRad = Math.max(150, Math.min(240, 16000 / Math.max(w, 420)));
+  }
+  addEventListener("resize", resize); resize(); tRad = rad; place();
+
+  let drag = null, moved = 0;
+  cv.addEventListener("pointerdown", e => { drag = { x: e.clientX, y: e.clientY }; moved = 0; cv.setPointerCapture(e.pointerId); cv.classList.add("drag"); });
+  cv.addEventListener("pointermove", e => {
+    const r = cv.getBoundingClientRect();
+    pointer.x = (e.clientX - r.left) / r.width * 2 - 1; pointer.y = -((e.clientY - r.top) / r.height) * 2 + 1; hasPointer = true;
+    if (!drag) return;
+    const dx = e.clientX - drag.x, dy = e.clientY - drag.y; moved += Math.abs(dx) + Math.abs(dy);
+    tTheta -= dx * .008; tPhi = Math.max(.12, Math.min(3.0, tPhi - dy * .006));
+    drag = { x: e.clientX, y: e.clientY }; spin = false; document.getElementById("bSpin").classList.remove("on");
+  });
+  ["pointerup", "pointercancel", "pointerleave"].forEach(ev => cv.addEventListener(ev, e => {
+    if (drag && moved < 6 && ev === "pointerup") pick();
+    drag = null; cv.classList.remove("drag"); if (ev !== "pointerup") hasPointer = false;
+  }));
+  cv.addEventListener("wheel", e => { e.preventDefault(); tRad = Math.max(95, Math.min(320, tRad + e.deltaY * .18)); }, { passive: false });
+
+  /* ---- picking ---- */
+  const ray = new THREE.Raycaster(), pointer = new THREE.Vector2();
+  let hasPointer = false, hovered = null, selected = null;
+  const el = { ref: document.getElementById("pRef"), name: document.getElementById("pName"), desc: document.getElementById("pDesc"), spec: document.getElementById("pSpec") };
+  function setCard(u) {
+    el.ref.textContent = u.ref; el.name.textContent = u.name; el.desc.textContent = u.desc;
+    el.spec.innerHTML = (u.spec || []).map(s => `<span>${s}</span>`).join("");
+  }
+  function topComp(o) { while (o && !comps.includes(o)) o = o.parent; return o; }
+  function hit() {
+    ray.setFromCamera(pointer, camera);
+    const is = ray.intersectObjects(compGroup.children, true);
+    if (is.length) return topComp(is[0].object);
+    const bs = ray.intersectObject(sub, false);
+    return bs.length ? sub : null;
+  }
+  function glow(obj, on) {
+    if (!obj || obj === sub) return;
+    obj.traverse(o => {
+      if (!o.isMesh) return;
+      if (on) { if (!o.userData._e) o.userData._e = o.material; o.material = o.material.clone(); o.material.emissive = new THREE.Color(0xE0B35A); o.material.emissiveIntensity = .26; }
+      else if (o.userData._e) { o.material = o.userData._e; delete o.userData._e; }
+    });
+  }
+  function pick() {
+    const o = hit(); if (!o) return;
+    if (selected && selected !== o) glow(selected, false);
+    selected = o; glow(o, true); setCard(o.userData);
+    document.getElementById("part").scrollIntoView({ block: "nearest", behavior: reduce ? "auto" : "smooth" });
+  }
+
+  /* ---- controls ---- */
+  const T_ = id => document.getElementById(id);
+  T_("bSpin").addEventListener("click", e => { spin = !spin; e.target.classList.toggle("on", spin); });
+  T_("bExp").addEventListener("click", e => { exploded = !exploded; e.target.classList.toggle("on", exploded); });
+  T_("bFlip").addEventListener("click", e => { flipped = !flipped; e.target.classList.toggle("on", flipped); tPhi = flipped ? 2.5 : .78; });
+  T_("bSig").addEventListener("click", e => { signals = !signals; e.target.classList.toggle("on", signals); if (!signals) { pulses.forEach(p => board.remove(p.m)); pulses.length = 0; } });
+  T_("bReset").addEventListener("click", () => { tTheta = -.55; tPhi = .78; tRad = 175; flipped = false; T_("bFlip").classList.remove("on"); });
+
+  /* ---- public state for the firmware console ---- */
+  const api = { led: [0, 0], radio: 0, rate: 1, boost: 0 };
+
+  /* ---- loop ---- */
+  let vis = true, t0 = performance.now();
+  new IntersectionObserver(([e]) => { vis = e.isIntersecting; if (vis) loop(); }).observe(cv);
+  function loop() {
+    if (!vis) return;
+    requestAnimationFrame(loop);
+    const now = performance.now(), dt = Math.min(50, now - t0); t0 = now;
+    if (spin && !drag) tTheta += dt * .00016;
+    theta += (tTheta - theta) * .1; phi += (tPhi - phi) * .1; rad += (tRad - rad) * .08;
+    place();
+
+    compGroup.children.forEach(c => {
+      const target = exploded ? c.userData.lift : 0;
+      c.position.z = c.userData.baseZ + (c.position.z - c.userData.baseZ) * .88 + (target - (c.position.z - c.userData.baseZ)) * .12;
+    });
+
+    if (signals && !reduce) {
+      if (Math.random() < .045 * api.rate + api.boost) spawn();
+      for (let i = pulses.length - 1; i >= 0; i--) {
+        const p = pulses[i]; p.d += p.v * api.rate * (dt / 16);
+        if (p.d > p.pa.L) { board.remove(p.m); pulses.splice(i, 1); continue; }
+        const [x, y] = ptAt(p.pa, p.d); p.m.position.x = x; p.m.position.y = y;
+      }
+    }
+    leds.forEach((l, i) => {
+      const v = api.led[i];
+      l.m.emissiveIntensity = .12 + v * 2.2; l.light.intensity = v * 3.2;
+    });
+    rings.forEach((r, i) => {
+      if (api.radio <= 0) { r.material.opacity = 0; return; }
+      r.userData.t = (r.userData.t + dt * .0009) % 1;
+      const s = .4 + r.userData.t * 4.2; r.scale.set(s, s, s);
+      r.material.opacity = (1 - r.userData.t) * .75 * api.radio;
+    });
+    if (hasPointer && !drag) {
+      const o = hit();
+      if (o !== hovered) { if (hovered && hovered !== selected) glow(hovered, false); hovered = o; if (o && o !== selected) glow(o, true); }
+    }
+    renderer.render(scene, camera);
+  }
+  loading.classList.add("gone");
+  setTimeout(() => loading.remove(), 700);
+  loop();
+
+  return {
+    api,
+    select(ref) { const c = comps.find(x => x.userData.ref === ref) || sub; if (selected) glow(selected, false); selected = c; glow(c, true); setCard(c.userData); },
+    explode(v) { exploded = v; T_("bExp").classList.toggle("on", v); }
+  };
+})();
+
+/* ============================ FIRMWARE CONSOLE ============================ */
+(() => {
+  const P = {
+    blink: { file: "blink.c", part: "D1", code:
+`// Heartbeat: if this LED stops, the watchdog resets the board
+void heartbeat_task(void *arg) {
+    gpio_set_direction(LED_HEARTBEAT, GPIO_MODE_OUTPUT);
+    for (;;) {
+        gpio_set_level(LED_HEARTBEAT, 1);
+        vTaskDelay(pdMS_TO_TICKS(60));
+        gpio_set_level(LED_HEARTBEAT, 0);
+        vTaskDelay(pdMS_TO_TICKS(940));
+        esp_task_wdt_reset();
+    }
+}`, run: "blink" },
+
+    pwm: { file: "pwm.c", part: "U3", code:
+`// 20 kHz centre-aligned PWM with dead-time, STM32 advanced timer
+void pwm_init(void) {
+    htim1.Init.Prescaler         = 0;
+    htim1.Init.CounterMode       = TIM_COUNTERMODE_CENTERALIGNED1;
+    htim1.Init.Period            = 4250;          // 170 MHz / (2 * 20 kHz)
+    HAL_TIM_PWM_Init(&htim1);
+
+    TIM_BreakDeadTimeConfigTypeDef bd = {0};
+    bd.DeadTime      = 40;                        // ~235 ns, no shoot-through
+    bd.BreakState    = TIM_BREAK_ENABLE;          // hardware fault input
+    HAL_TIMEx_ConfigBreakDeadTime(&htim1, &bd);
+    HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
+}`, run: "pwm" },
+
+    adc: { file: "sensor.c", part: "U1", code:
+`// Oversampled ADC via DMA, no jitter from the control loop
+void adc_start(void) {
+    hadc1.Init.OversamplingMode = ENABLE;
+    hadc1.Init.Oversampling.Ratio = ADC_OVERSAMPLING_RATIO_16;
+    HAL_ADC_Start_DMA(&hadc1, (uint32_t *)dma_buf, N_SAMPLES);
+}
+
+float read_temperature(void) {
+    uint32_t sum = 0;
+    for (int i = 0; i < N_SAMPLES; i++) sum += dma_buf[i];
+    float volts = (sum / (float)N_SAMPLES) * (3.3f / 65535.0f);
+    return ntc_volts_to_celsius(volts);           // Steinhart-Hart
+}`, run: "adc" },
+
+    radio: { file: "uplink.c", part: "MOD1", code:
+`// Publish a reading, survive a dead link without losing data
+void uplink(reading_t *r) {
+    uint8_t buf[16];
+    size_t n = pack_cbor(buf, r);
+
+    if (!wifi_is_up() || mqtt_publish("node/07/telemetry", buf, n) != 0) {
+        flash_queue_push(buf, n);                 // store and forward
+        ESP_LOGW(TAG, "link down, queued %u bytes", (unsigned)n);
+        return;
+    }
+    flash_queue_drain(mqtt_publish);              // catch up after outage
+}`, run: "radio" },
+
+    safety: { file: "safety.c", part: "J1", code:
+`// The e-stop is hardware. Firmware only reports what already happened.
+void safety_poll(void) {
+    if (!gpio_get_level(ESTOP_SENSE)) {           // contactor already open
+        pwm_force_low();                          // belt and braces
+        fault_latch(FAULT_ESTOP);
+        led_set(LED_FAULT, 1);
+        ESP_LOGE(TAG, "E-STOP asserted, motors de-energised");
+    }
+    if (crc8_sae_j1850(rx.data, rx.len) != rx.crc)
+        fault_latch(FAULT_BUS_CRC);
+}`, run: "safety" }
+  };
+
+  const KW = "void|int|char|float|double|bool|unsigned|static|const|struct|class|return|if|else|while|for|switch|case|break|true|false|sizeof|size_t|uint8_t|uint16_t|uint32_t|int16_t";
+  const RE = new RegExp(`(\\/\\/.*$)|("(?:[^"\\\\]|\\\\.)*")|\\b(0x[0-9A-Fa-f]+|\\d+(?:\\.\\d+)?f?)\\b|\\b(${KW}|[a-z]\\w*_t|[A-Z]\\w*TypeDef)\\b|\\b([A-Za-z_]\\w*)(?=\\s*\\()`, "g");
+  const esc = s => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  function hl(src) {
+    return src.split("\n").map((line, i) => {
+      let out = "", last = 0, m; RE.lastIndex = 0;
+      while ((m = RE.exec(line))) {
+        out += esc(line.slice(last, m.index));
+        const cls = m[1] ? "cm" : m[2] ? "str" : m[3] ? "num" : m[4] ? "kw" : "fn";
+        out += `<span class="${cls}">${esc(m[0])}</span>`; last = m.index + m[0].length;
+      }
+      return `<span class="ln">${i + 1}</span>` + out + esc(line.slice(last));
+    }).join("\n");
+  }
+
+  const codeEl = document.getElementById("fwCode"), fileEl = document.getElementById("fwFile"), out = document.getElementById("out");
+  const bar = document.getElementById("runBar"), btn = document.getElementById("runBtn"), scope = document.getElementById("scope"), sctx = scope.getContext("2d");
+  const mcu = document.getElementById("mcuPill").querySelector("b"), mRail = document.getElementById("mRail"), mAmp = document.getElementById("mAmp"), mTemp = document.getElementById("mTemp"), mLink = document.getElementById("mLink");
+  let cur = "blink", token = 0, timers = [], wave = null, waveT = 0, data = Array(140).fill(24);
+
+  function clear() { token++; timers.forEach(clearInterval); timers.forEach(clearTimeout); timers = []; wave = null; if (BOARD) { BOARD.api.led = [0, 0]; BOARD.api.radio = 0; BOARD.api.rate = 1; BOARD.api.boost = 0; } }
+  function show(k, first) {
+    clear(); cur = k; codeEl.innerHTML = hl(P[k].code); codeEl.scrollTop = 0; fileEl.textContent = P[k].file;
+    out.innerHTML = '<span class="t-d">Ready. Press run.</span>'; bar.style.width = "0"; mcu.textContent = "idle"; mLink.textContent = "idle";
+    if (BOARD && !first) BOARD.select(P[k].part);
+  }
+  const line = (cls, txt) => { const s = document.createElement("span"); s.className = cls; s.textContent = txt + "\n"; out.appendChild(s); out.scrollTop = out.scrollHeight; while (out.children.length > 160) out.removeChild(out.firstChild); };
+  document.querySelectorAll("#fwSeg button").forEach(b => b.addEventListener("click", () => {
+    document.querySelectorAll("#fwSeg button").forEach(x => x.classList.toggle("on", x === b)); show(b.dataset.f);
+  }));
+
+  /* scope */
+  function drawScope() {
+    const dpr = Math.min(devicePixelRatio || 1, 2), W = scope.clientWidth, H = 120;
+    if (scope.width !== W * dpr) { scope.width = W * dpr; scope.height = H * dpr; sctx.setTransform(dpr, 0, 0, dpr, 0, 0); }
+    sctx.clearRect(0, 0, W, H);
+    sctx.strokeStyle = "rgba(238,242,234,.07)"; sctx.lineWidth = 1;
+    for (let i = 1; i < 4; i++) { sctx.beginPath(); sctx.moveTo(0, H / 4 * i); sctx.lineTo(W, H / 4 * i); sctx.stroke(); }
+    sctx.strokeStyle = "#E0B35A"; sctx.lineWidth = 2;
+    sctx.beginPath();
+    for (let x = 0; x <= W; x++) {
+      const v = wave ? wave(x / W, waveT) : Math.max(0, Math.min(1, (data[Math.floor(x / W * (data.length - 1))] - 15) / 40));
+      const y = H - 10 - v * (H - 20);
+      x ? sctx.lineTo(x, y) : sctx.moveTo(x, y);
+    }
+    sctx.stroke();
+    sctx.fillStyle = "#95AE9F"; sctx.font = '11px "JetBrains Mono", monospace';
+    sctx.fillText(wave ? (cur === "pwm" ? "PWM output, 20 kHz" : "live signal") : "NTC temperature, 1 Hz", 8, 14);
+  }
+  (function tickScope() { waveT += .05; drawScope(); requestAnimationFrame(tickScope); })();
+  setInterval(() => { document.getElementById("clk").textContent = new Date().toTimeString().slice(0, 8); }, 1000);
+
+  /* programs */
+  const RUN = {
+    blink(id) {
+      line("t-d", "$ idf.py flash monitor");
+      let p = 0; const b = setInterval(() => { p += 8; bar.style.width = Math.min(100, p) + "%"; if (p >= 100) { clearInterval(b); go(); } }, 45); timers.push(b);
+      function go() {
+        if (id !== token) return;
+        mcu.textContent = "running"; line("t-i", "I (312) boot: heartbeat task started, 1 Hz");
+        let n = 0;
+        const iv = setInterval(() => {
+          if (id !== token) return clearInterval(iv);
+          BOARD && (BOARD.api.led[0] = 1);
+          setTimeout(() => { if (id === token && BOARD) BOARD.api.led[0] = 0; }, 140);
+          if (++n % 3 === 0) line("t-i", `I (${1000 + n * 1000}) wdt: fed, uptime ${n} s, heap 181 KB`);
+          if (n > 40) { clearInterval(iv); mcu.textContent = "idle"; }
+        }, 1000); timers.push(iv);
+      }
+    },
+    pwm(id) {
+      line("t-d", "$ st-flash write pwm.bin 0x8000000");
+      bar.style.width = "100%"; mcu.textContent = "running";
+      line("t-i", "[tim1] 20 kHz centre-aligned, dead-time 235 ns");
+      let duty = .05, dir = 1;
+      wave = (x, t) => { const ph = (x * 6 + t * 2) % 1; return ph < duty ? .85 : .08; };
+      const iv = setInterval(() => {
+        if (id !== token) return clearInterval(iv);
+        duty += dir * .04; if (duty > .92 || duty < .05) dir *= -1;
+        BOARD && (BOARD.api.led[0] = duty, BOARD.api.rate = .6 + duty * 3.5);
+        mAmp.textContent = Math.round(40 + duty * 900) + " mA";
+        mTemp.textContent = (38 + duty * 14).toFixed(0) + " °C";
+        if (Math.random() < .25) line("t-i", `[foc] duty ${(duty * 100).toFixed(0)}%, bus 12.0 V, Iq ${(duty * 3.2).toFixed(2)} A`);
+      }, 320); timers.push(iv);
+    },
+    adc(id) {
+      bar.style.width = "100%"; mcu.textContent = "running";
+      line("t-i", "[adc] DMA circular, 16x oversampling, 12 -> 16 bit");
+      let t = 0;
+      const iv = setInterval(() => {
+        if (id !== token) return clearInterval(iv);
+        t++; const v = 24 + Math.sin(t / 7) * 5 + Math.random() * 1.5 + (t > 22 ? (t - 22) * .9 : 0);
+        data.push(v); data.shift(); wave = null;
+        mTemp.textContent = v.toFixed(1) + " °C";
+        line(v > 40 ? "t-w" : "t-i", `[ntc] ${v.toFixed(2)} C   raw ${Math.round(v * 1490)}   sigma ${(Math.random() * .04 + .01).toFixed(3)}`);
+        BOARD && (BOARD.api.led[1] = v > 40 ? 1 : 0);
+        if (v > 40) line("t-w", "[alarm] over temperature, derating output");
+        if (t > 34) { clearInterval(iv); mcu.textContent = "idle"; }
+      }, 420); timers.push(iv);
+    },
+    radio(id) {
+      bar.style.width = "100%"; mcu.textContent = "running"; mLink.textContent = "connecting";
+      line("t-d", "[wifi] scanning, joining farm-ap");
+      const seq = [
+        ["t-i", "[wifi] got ip 10.4.1.27, rssi -63 dBm", () => mLink.textContent = "online"],
+        ["t-i", "[mqtt] connected to broker, clean session", null],
+        ["t-i", "[tx] node/07/telemetry  14 bytes  cbor", () => BOARD && (BOARD.api.radio = 1)],
+        ["t-w", "[wifi] beacon timeout, link down", () => { mLink.textContent = "offline"; BOARD && (BOARD.api.radio = 0); }],
+        ["t-w", "[queue] stored 3 readings to flash", null],
+        ["t-i", "[wifi] reconnected, rssi -71 dBm", () => { mLink.textContent = "online"; BOARD && (BOARD.api.radio = 1); }],
+        ["t-i", "[queue] drained 3 readings, none lost", null],
+        ["t-i", "[tx] node/07/telemetry  14 bytes  ack 41 ms", null]
+      ];
+      let i = 0;
+      const iv = setInterval(() => {
+        if (id !== token) return clearInterval(iv);
+        const [c, t, fn] = seq[i++]; line(c, t); fn && fn();
+        if (i >= seq.length) { clearInterval(iv); mcu.textContent = "idle"; setTimeout(() => { if (id === token && BOARD) BOARD.api.radio = 0; }, 2500); }
+      }, 900); timers.push(iv);
+    },
+    safety(id) {
+      bar.style.width = "100%"; mcu.textContent = "running";
+      line("t-i", "[safety] e-stop loop armed, polling at 1 kHz");
+      BOARD && (BOARD.api.led[0] = .8, BOARD.api.rate = 1.6);
+      const t1 = setTimeout(() => {
+        if (id !== token) return;
+        line("t-e", "[safety] E-STOP asserted, motors de-energised");
+        line("t-e", "[safety] fault latched: FAULT_ESTOP");
+        BOARD && (BOARD.api.led = [0, 1], BOARD.api.rate = .15);
+        mAmp.textContent = "6 mA"; mLink.textContent = "safe state";
+      }, 2600); timers.push(t1);
+      const t2 = setTimeout(() => {
+        if (id !== token) return;
+        line("t-w", "[safety] operator reset, contactors re-armed");
+        line("t-i", "[safety] loop healthy, CRC-8 errors 0");
+        BOARD && (BOARD.api.led = [.8, 0], BOARD.api.rate = 1.6);
+        mAmp.textContent = "42 mA"; mLink.textContent = "online"; mcu.textContent = "idle";
+      }, 6200); timers.push(t2);
+    }
+  };
+
+  btn.addEventListener("click", () => {
+    clear(); const id = token; out.innerHTML = ""; bar.style.width = "0";
+    mRail.textContent = "3.30 V"; mAmp.textContent = "42 mA";
+    RUN[cur](id);
+    if (BOARD) BOARD.select(P[cur].part);
+  });
+  show("blink", true);
+})();
+</script>
+</body>
+</html>
